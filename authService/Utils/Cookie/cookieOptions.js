@@ -3,7 +3,7 @@ module.exports = {
         httpOnly : true,
             secure : true,
             sameSite : 'strict',
-            maxAge : 1 * 60 * 1000
+            maxAge : 1 * 60 * 60 * 1000
     },
     cookieRefreshToken : {
         httpOnly : true,
