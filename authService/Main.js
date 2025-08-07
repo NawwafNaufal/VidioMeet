@@ -26,9 +26,9 @@ app.get('/Test',validateJwt,(req,res) => {
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-app.use('/',signUp)
-app.use('/',logIn)
-app.use('/',forgertPassword)
+app.use('/auth/signup',signUp)
+app.use('/auth',logIn)
+app.use('/auth/forgot-password',forgertPassword)
 
 
 app.listen(PORT,() => {

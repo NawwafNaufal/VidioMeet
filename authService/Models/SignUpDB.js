@@ -19,10 +19,21 @@ const UserScema = new Mongoose.Schema({
         type : Date,
         required : true
     },
+    address : {
+        type : String
+    },
+    profilePicture : {
+        type : String,
+        default : " "
+    },
     role : {
         type: String,
         enum: ['admin','host','member'],
         default: 'member'
+    },
+    createdAt : {
+        type : Date,
+        default : Date.now
     }
 })
 

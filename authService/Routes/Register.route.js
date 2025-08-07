@@ -9,8 +9,8 @@ const limiterOtp = require('../Middleware/RateLimit/rateLimitOtpGenerate')
 
 const routes = express.Router()
 
-routes.post('/Otp',limitApi,fullNameValidate,signUpController)
-routes.post('/Verify',limitApi,valiOtp,verifOtp)
-routes.post('/Otp/Generate',limiterOtp,randomNewOtp)
+routes.post('/',limitApi,fullNameValidate,signUpController)
+routes.post('/verif-otp',limitApi,valiOtp,verifOtp)
+routes.post('/new-otp',limiterOtp,randomNewOtp)
 
 module.exports = routes

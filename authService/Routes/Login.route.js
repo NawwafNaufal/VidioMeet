@@ -4,6 +4,6 @@ const loginController = require('../Controllers/Auth/Login.controller')
 const validateLogin = require('../Middleware/Validation/validateLogin')
 const limitApi = require('../Middleware/RateLimit/rateLimitApi')
 
-routes.post('/LogIn',limitApi,validateLogin,loginController)
+routes.post('/login',limitApi,validateLogin,loginController)
 
 module.exports = routes

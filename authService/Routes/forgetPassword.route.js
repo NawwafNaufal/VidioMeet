@@ -8,9 +8,9 @@ const changePasssword = require('../Controllers/Password/changePassword.controll
 const validateNewAccesToken = require("../Middleware/Auth/jwtNewAccesToken")
 const limitApi = require("../Middleware/RateLimit/rateLimitApi")
 
-routes.post('/forgetPassword',forgetPasswordControl)
-routes.post('/verifOtp',verifOtp)
-routes.get('/NewToken',validateNewAccesToken,getNewAccesToken)
-routes.patch('/ChagePassword',limitApi,verifJwtChangePassword,changePasssword)
+routes.post('/',forgetPasswordControl)
+routes.post('/verif-otp',verifOtp)
+routes.get('/new-otp',validateNewAccesToken,getNewAccesToken)
+routes.patch('/reset-password',limitApi,verifJwtChangePassword,changePasssword)
 
 module.exports = routes
