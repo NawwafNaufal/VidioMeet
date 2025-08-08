@@ -10,7 +10,6 @@ const changePasssword = async (req,res) => {
         {email},
         {$set : {password : hashing}}
     ) 
-
     res.status(200).json("Kata sandi telah di ganti")
 }
 
