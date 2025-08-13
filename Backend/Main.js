@@ -3,6 +3,7 @@ require("dotenv").config()
 const mongooDb = require("./Config/Db")
 const signUp = require("./Routes/Register.route")
 const logIn = require('./Routes/Login.route')
+const getUsers = require('./Routes/getUsers.route')
 const swaggerUi = require('swagger-ui-express')
 const YAML = require('yamljs')
 const forgertPassword = require('./Routes/forgetPassword.route')
@@ -29,6 +30,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/auth/signup',signUp)
 app.use('/auth',logIn)
 app.use('/auth/forgot-password',forgertPassword)
+app.use('/admin',getUsers)
 
 
 app.listen(PORT,() => {
