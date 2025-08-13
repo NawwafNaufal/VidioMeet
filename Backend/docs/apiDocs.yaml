@@ -1,0 +1,237 @@
+openapi: 3.0.0
+info:
+  title: VidioChat API
+  version: 1.0.0
+  description: API vidio call dan chat
+
+tags:
+  - name: Users
+    description: Users management
+  - name: Dosen
+    description: Dosen management
+
+paths:
+  /signUp:
+    post:
+      summary: Create new account
+      description: endpoint ini bisa di akses oleh role [admin,host,member]
+      Rate limit: Max 5 attempts per 10 minute
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUpRequest'
+      responses:
+        200:
+          description: Create account success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignUpResponse'
+        400:
+          description: Account has already been declared
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSignup'
+        429:
+          description: Request to many, please try again later
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSignup'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /Otp:
+    post:
+      summary: Verification code otp
+      description: endpoint ini bisa di akses oleh role [admin,host,member]
+      Rate limit: Max 5 attempts per 10 minute
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OtpSendRequest'
+      responses:
+        200:
+          description: Create account success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OtpResponse'
+        400:
+          description: Terjadi kesalahan input userId
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseOtp'
+        500:
+          description: Terjadi kesalahan di server
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /Otp/Generate:
+    post:
+      summary: Generate Otp New code
+      description: Untuk memperloh kode otp baru ketika tidak mendapat kode
+      Rate limit: Max 1 attempts per 60 second
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OtpNewSendRequest'
+        200:
+          description: code otp has been send
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OtpNewResponse'     
+        429:
+          description: 'Request to many, please try again later'  
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorOtNewpResponse'
+        500:
+          description: Terjadi kesalahan di server
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    SignUpRequest:
+      type: object
+      required:
+        - username
+        - email
+        - password
+        - dateOfBirth
+        - role
+      properties:
+        username:
+          type: string
+          description: Nama
+          example: Saputra
+        email:
+          type: string
+          description: email yang tersedia
+          example: "saputra@gmail.com"
+        password:
+          type: string
+          minLength: 8
+          description: Password minimal 8 karakter
+          example: password123
+        dateOfBirth:
+          type: string
+          description: Password minimal 8 karakter
+          example: 12/03/2000
+        role:
+          type: string
+          enum: ['admin','host','member']
+          example: 'admin'
+
+    SignUpResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Otp has been send
+
+    ErrorResponseSignup:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "Email already exists"
+            - "Username already exists"
+            - "Too many Request. Try again in 10 minute."
+          example: "Email already exists"
+
+    OtpSendRequest:
+      type: object
+      required:
+        - username
+        - email
+        - password
+        - dateOfBirth
+      properties:
+        username:
+          type: string
+          description: Nama
+          example: naudal
+        email:
+          type: string
+          description: email yang tersedia
+          example: "naufalnawwaf23@gmail.com"
+        password:
+          type: string
+          minLength: 8
+          description: Password minimal 8 karakter
+          example: password123
+        dateOfBirth:
+          type: string
+          description: Password minimal 8 karakter
+          example: 12/03/2000
+
+    OtpResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: code otp has been send
+
+    ErrorResponseOtp:
+      type: object
+      properties:
+        message:
+          type: string
+          enum: 
+            - "Code Otp is not valid"
+            - "Code otp is Expired"
+            - "Data empty"
+            - "Too many Request. Try again in 10 minute."
+          example: "Code otp is Expired"
+
+    ErrorResponse:
+      type: object
+      properties:
+        message: 
+          type: string
+          example: Internal server error
+        
+    OtpNewResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: "Generate new code otp"
+
+    ErrorOtNewpResponse:
+      type:
+      properties:
+        message:
+          type: string
+          enum:
+            - "Code Otp is not valid"
+            - "Code otp is Expired"
+            - "Data empty"
+            - "Too many Request. Try again in 60 second."
+          example: "Code otp is Expired"
