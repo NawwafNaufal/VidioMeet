@@ -8,3 +8,9 @@ const data = {
 
 const hh = data.name = 'ucup'
 console.log(data.name)
+
+const arr = ['aple','gedang','jambu','wortel','melon']
+
+arr.forEach((index,value) => {
+    console.log(index,value)
+})
