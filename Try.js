@@ -7,4 +7,21 @@ const data = {
 
 
 const hh = data.name = 'ucup'
-console.log(data.name)
+console.log(data)
+
+class angka {
+    constructor(a) {
+        this.a = [1,2,3,4,5,6,7,8,9]
+    }
+}
+
+class user extends angka {
+    constructor(email,password,a) {
+        super(a)
+        this.email = email,
+        this.password = password
+    }
+}
+
+const value = new user('n@gmail.com','1234565')
+console.log(value)

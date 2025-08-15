@@ -6,7 +6,8 @@ const cache = require('../../Utils/Cache/cache')
 const emailSend = require('../../Utils/Emails/emailSend')
 const expiresAtTime = require('../../Utils/Token/ExpiresAtTime')
 
-const signUpController = async (req,res) => {
+
+const signUpController = async (req,res,next) => {
     const {username,email,password,dateOfBirth} = req.fullNameValidate
 
     try {                
@@ -34,14 +35,7 @@ const signUpController = async (req,res) => {
         })
         
     } catch (error) {
-        if(error.message){
-            logger.warn(error.message)
-            return res.status(400).json({
-                message : error.message
-            })
-        }
-        logger.error(`Server internal error ${error.message} ${error.stack}`)
-        return res.status(500).json("Server internal error")
+        next(error)
     }
 }
 

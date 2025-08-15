@@ -7,7 +7,7 @@ const {cookieAccesToken,cookieRefreshToken} = require("../../Utils/Cookie/cookie
 const {randomRefreshToken} = require('../../Utils/Token/randomString')
 const {jwtOption} = require('../../Utils/Token/jwtOption')
 
-const loginController = async (req,res) => {
+const loginController = async (req,res,next) => {
     const {username,email,password} = req.validateLogin
 
     try {
@@ -43,14 +43,7 @@ const loginController = async (req,res) => {
             }
         })
     } catch (error) {
-        if(error.message){
-            logger.warn(error.message)
-            return res.status(400).json({
-                message : error.message
-            })
-        }
-        logger.error(`Internal Server error ${error.message} ${error.stack}`)
-        return res.status(500).json(`Internal Server error`)
+        next(error)
     }
 
 }

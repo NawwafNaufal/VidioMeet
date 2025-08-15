@@ -4,7 +4,7 @@ const cache = require('../../Utils/Cache/cache')
 const expiresAtTime = require('../../Utils/Token/ExpiresAtTime')
 const logger = require('../../log/Winston')
 
-const randomNewOtp = async (req,res) => {
+const randomNewOtp = async (req,res,next) => {
     emailSend(cache.username,cache.email)
 
     try {
@@ -21,16 +21,7 @@ const randomNewOtp = async (req,res) => {
             data : resultOtp
         })
     } catch (error) {
-        if(error.message){
-            logger.warn(error.message)
-            return res.status(400).json({
-                message : error.message
-            })
-        }
-        logger.error(`Internal Server Error ${error.message} ${error.stack}`)
-        return res.status(500).json({
-            message : "Internal Server Error"
-        })
+        next(error)
     }
 }
 

@@ -4,7 +4,7 @@ const otp = require('../../Models/OtpCodeDb')
 const cache = require('../../Utils/Cache/cache')
 const {otpValidate} = require('../../Services/ValidateOtpdb')
 
-const verifOtp = async (req,res) => {
+const verifOtp = async (req,res,next) => {
     const {code,email} = req.valiOtp
 
     try {
@@ -36,14 +36,7 @@ const verifOtp = async (req,res) => {
         })
         
     } catch (error) {
-        if(error.message){
-            logger.warn(error.message)
-            return res.status(400).json({
-                message : error.message
-            })
-        }
-        logger.error(`Internal server error ${error.message} ${error.stack}`)
-        return res.status(500).json(`Internal server error`)
+        next(error)
     }
 }
 
