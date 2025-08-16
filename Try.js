@@ -1,16 +1,10 @@
-const data = {
-    name : 'naufal',
-    umur : 13,
-    noHp : '94839843984',
-    nik : '837483748374873'
-}
+const arrayAngka = [
+  { user: "A", amount: 100 },
+  { user: "B", amount: 50 },
+  { user: "A", amount: 200 },
+  { user: "C", amount: 70 },
+  { user: "B", amount: 30 }
+]
 
-
-const hh = data.name = 'ucup'
-console.log(data.name)
-
-const arr = ['aple','gedang','jambu','wortel','melon']
-
-arr.forEach((index,value) => {
-    console.log(index,value)
-})
+const result = arrayAngka.amount[0] + arrayAngka.amount[2]
+console.log(result)

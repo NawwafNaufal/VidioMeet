@@ -1,7 +1,7 @@
 const Users = require("../../Models/SignUpDB")
 const logger = require('../../log/Winston')
 
-const getUsersController =async (req,res) => {
+const getUsersController =async (req,res,next) => {
     try {
         const page = parseInt(req.query.page) || 1
         const limit = parseInt(req.query.limit) || 10
@@ -27,7 +27,7 @@ const getUsersController =async (req,res) => {
             data : getUser
         })
     } catch (error) {
-        console.log(error)
+        return res.status(500).json("Server internal error")
     }
     
 }
