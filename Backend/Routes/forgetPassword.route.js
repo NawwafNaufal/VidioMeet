@@ -10,7 +10,7 @@ const limitApi = require("../Middleware/RateLimit/rateLimitApi")
 
 routes.post('/',forgetPasswordControl)
 routes.post('/verif-otp',verifOtp)
-routes.get('/new-otp',validateNewAccesToken,getNewAccesToken)
+routes.get('/new-acces-token',validateNewAccesToken,getNewAccesToken)
 routes.patch('/reset-password',limitApi,verifJwtChangePassword,changePasssword)
 
 module.exports = routes
