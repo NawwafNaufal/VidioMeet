@@ -7,6 +7,15 @@ const data = {
 
 
 const hh = data.name = 'ucup'
+
+console.log(data.name)
+
+const arr = ['aple','gedang','jambu','wortel','melon']
+
+arr.forEach((index,value) => {
+    console.log(index,value)
+})
+
 console.log(data)
 
 class angka {
@@ -25,3 +34,4 @@ class user extends angka {
 
 const value = new user('n@gmail.com','1234565')
 console.log(value)
+

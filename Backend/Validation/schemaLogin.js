@@ -5,7 +5,7 @@ const schemaLogIn = Joi.object({
                         .min(3)
                         .max(45)
                         .messages({
-                            'string.min' : 'Minimal 3 Character',
+                            'string.min' : '{{#label}} Minimal {{#limit}} Character',
                             'string.max' : 'Maximal 8 Character',
                             'string.empty' : 'Column not be empty',
                         }),
