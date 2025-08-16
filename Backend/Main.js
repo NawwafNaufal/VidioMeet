@@ -8,6 +8,7 @@ const YAML = require('yamljs')
 const forgertPassword = require('./Routes/forgetPassword.route')
 const cookie = require('cookie-parser')
 const logger = require("./log/Winston")
+const newAccestoken = require('./Routes/newAccesToken.route')
 const validateJwt = require('./Middleware/Auth/jwtValidate')
 const errorMiddleware = require("./Middleware/Error/errorMiddleware")
 
@@ -30,6 +31,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use('/auth/signup',signUp)
 app.use('/auth',logIn)
+app.use('/auth',newAccestoken)
 app.use('/auth/forgot-password',forgertPassword)
 
 app.use(errorMiddleware)

@@ -1,35 +1,17 @@
 const  jwt = require('jsonwebtoken')
 require('dotenv').config()
-const validateLogIn = require('../../Services/ValidateLogIn')
+const validateLogInService = require('../../Services/ValidateLogIn')
 const logger = require('../../log/Winston')
 const refreshToken = require('../../Models/refreshToken')
 const {cookieAccesToken,cookieRefreshToken} = require("../../Utils/Cookie/cookieOptions")
-const {randomRefreshToken} = require('../../Utils/Token/randomString')
-const {jwtOption} = require('../../Utils/Token/jwtOption')
+
 
 const loginController = async (req,res,next) => {
     const {username,email,password} = req.validateLogin
 
     try {
-        const emailOrUsername = username || email
-    
-        const getDataUser =  await validateLogIn(emailOrUsername,password)
-    
-        const payload = {
-            _id : getDataUser._id,
-            username : getDataUser.username,
-            email : getDataUser.email,
-            dateOfBirth : getDataUser.dateOfBirth,
-            role : getDataUser.role
-        }
-        const accesToken = jwt.sign(payload,process.env.JWT_KEY,jwtOption)
-        
-            const refToken = new refreshToken({
-                token: randomRefreshToken(),
-                userId : payload._id,
-                expiredAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-            })
-            await refToken.save()
+        const {getDataUser,accesToken,refToken} =await validateLogInService(username || email,password)
+        console.log(username,email)
 
         res.cookie('accesToken',accesToken,cookieAccesToken)
         res.cookie('refreshToken',refToken,cookieRefreshToken)

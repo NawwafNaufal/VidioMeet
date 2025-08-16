@@ -1,24 +1,11 @@
-const jwt = require('jsonwebtoken')
+const validateJwt = require('../../Services/validateJwt')
 require('dotenv').config()
 const {cookieAccesToken} = require('../../Utils/Cookie/cookieOptions')
-const {jwtOption} = require('../../Utils/Token/jwtOption')
-const validateJwt = require('../../Services/validateJwt')
-const logger = require('../../log/Winston')
 
 const getNewAccesToken =async (req,res,next) => {
-    const token = req.jwt
+        const token = req.jwt
     try {
-        const getData =await validateJwt(token)
-
-        const payload = {
-            _id : getData._id,
-            username : getData.username,
-            email : getData.email,
-            dateOfBirth : getData.dateOfBirth,
-            role : getData.role
-        }
-    
-        const newAccesToken = jwt.sign(payload,process.env.JWT_KEY,jwtOption)
+        const newAccesToken = await validateJwt(token)
     
         res.cookie('accesToken',newAccesToken,cookieAccesToken)
     
