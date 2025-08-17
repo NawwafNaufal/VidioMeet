@@ -15,7 +15,7 @@ const errorMiddleware = async (err,req,res,next) => {
         })
     }
     else if(err instanceof ValidationError){
-        logger.warn(`${err.message}`)
+        logger.warn(`${err.message} ${err.stack}`)
         return res.status(400).json({
             errors : err.message
         })

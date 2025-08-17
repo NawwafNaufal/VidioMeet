@@ -1,16 +1,17 @@
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
+const ResponseError = require("../Error/responseError")
 
 const roleValidate = (roleApp) => {
         return (req,res,next) => {
             const token = req.result
-            console.log(token)
+
             if(!token){
-                return res.status(401).json('Token di perlukan')
+                throw new ResponseError (401,'Token is required')
             }
             const {role} = token
             if(!roleApp.includes(role)){
-                return res.status(403).json('Akses tidak di perbolehkan')
+                throw new ResponseError(403,'Access not permitted')
             }
             next()
         }

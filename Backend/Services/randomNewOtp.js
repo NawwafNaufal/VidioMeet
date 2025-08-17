@@ -3,9 +3,14 @@ const {randomOtp} = require('../Utils/Token/randomString')
 const cache = require('../Utils/Cache/cache')
 const expiresAtTime = require('../Utils/Token/ExpiresAtTime')
 const otp = require("../Models/OtpCodeDb")
+const ResponseError = require("../Error/responseError")
 
 const randomNewOtpService = async () => {
     emailSend(cache.username,cache.email)
+
+    if(!cache.username && cache.email){
+        throw new ResponseError("Cache is empty")
+    }
 
     const randomString = randomOtp()
 

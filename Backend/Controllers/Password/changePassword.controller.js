@@ -1,16 +1,16 @@
-const Users = require('../../Models/SignUpDB')
-const bcrypt = require('bcrypt')
+const chagePasswordService = require("../../Services/chagePassword.service")
+const {cookieAccesToken} = require("../../Utils/Cookie/cookieOptions")
 
 const changePasssword = async (req,res) => {
-    const {email,password} = req.body
+    const {email,password} = req.chagePassword
 
-    const hashing =await  bcrypt.hash(password,10)
+    await chagePasswordService(email,password)
 
-    await Users.updateOne(
-        {email},
-        {$set : {password : hashing}}
-    ) 
-    res.status(200).json("Kata sandi telah di ganti")
+    res.clearCookie("changePasswordToken",cookieAccesToken)
+
+    res.status(200).json({
+        message : "Password has been changed"
+    })
 }
 
 module.exports = changePasssword

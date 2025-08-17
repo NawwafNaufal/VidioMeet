@@ -1,32 +1,20 @@
-const otp = require('../../Models/OtpCodeDb')
-const jwt = require('jsonwebtoken')
+const changePassword = require("../../Services/OTP/chagePassword.service")
 const {cookieAccesToken} = require('../../Utils/Cookie/cookieOptions')
-require('dotenv').config()
-const cache = require("../../Utils/Cache/cache")
 
-const verifOtp =async (req,res) => {
-    const {code,email} = req.body
+const verifOtp =async (req,res,next) => {
+    const {code,email} = req.valiOtp
+    try {
+        const token  = await changePassword(code,email)
 
-    const resultOtp = await otp.findOne(code)
-
-    if(!resultOtp) {
-        return res.status(400).json('Code otp is not valid')
+        res.cookie('changePasswordToken',token,cookieAccesToken)  
+    
+        res.status(200).json({
+            message : "done",
+            data : token
+        })
+    } catch (error) {
+        return next(error)
     }
-
-    const getData = cache.get(email)
-    console.log(getData)
-    if(!getData){
-        return res.send("Email tidak ada")
-    }
-
-    const token = jwt.sign({type : 'Token Change Password'},process.env.JWT_KEY,{expiresIn : '1m'})
-
-    res.cookie('changePasswordToken',token,cookieAccesToken)  
-
-    res.status(200).json({
-        message : "done",
-        data : token
-    })
 }
 
 module.exports = verifOtp

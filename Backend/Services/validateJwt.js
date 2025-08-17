@@ -9,12 +9,12 @@ const validateJwt = async (token) => {
     const result = await refreshToken.findOne(token)
 
     if(!result) {
-        throw new ResponseError(401,'Refresh token tidak ada')
+        throw new ResponseError(401,'Refresh token missing')
     }
     const getData = await Users.findById(result.userId)
 
     if(!getData){
-        throw new ResponseError(400,"User id tidak ada")
+        throw new ResponseError(400,"User ID does not exist")
     }    
             const payload = {
                 _id : getData._id,

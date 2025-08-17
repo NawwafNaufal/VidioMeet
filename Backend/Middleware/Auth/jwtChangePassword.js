@@ -1,20 +1,25 @@
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
+const ResponseError = require("../Error/errorMiddleware")
 
 const verifJwtChangePassword = (req,res,next) => {
     const token = req.cookies.changePasswordToken
+
+    if(!token) {
+            throw new ResponseError(401,"Token is required")
+    }
 
     jwt.verify(token,process.env.JWT_KEY,(err,decode) => {
         if(err){
             switch(err.name){
                 case "TokenExpiredError":
-                    return res.status(401).json({message : 'Token expired'})
+                    return next(new ResponseError(401,'Token expired'))
                 case "JsonWebTokenError":
-                    return res.status(403).json({message : 'Invalid token'})
+                    return next(new ResponseError(403,'Invalid token'))
                 case "NotBeforeError":
-                    return res.status(403).json({message : 'Token not active yet'})
+                    return new(ResponseError(403,'Token not active yet'))
                 default :
-                    return res.status(500).json({message : 'internal token error'})
+                    return new(ResponseError(500,'internal token error'))
             }
         }
         next()
