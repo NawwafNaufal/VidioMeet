@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken")
 require('dotenv').config()
-const ResponseError = require("../Error/errorMiddleware")
+const ResponseError = require("../../Error/responseError")
 
 const validateJwt = (req,res,next) => {
         const token = req.cookies.accesToken

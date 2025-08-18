@@ -13,6 +13,7 @@ const signUp = require("./Routes/Register.route")
 const newAccestoken = require('./Routes/newAccesToken.route')
 const logOut = require("./Routes/logout.route")
 const updateRole = require("./Routes/Admin/updateRole.route")
+const getUser = require("./Routes/getUsers.route")
 
 const roleValidate = require("./Middleware/Validation/validateRole")
 
@@ -40,7 +41,9 @@ app.use('/auth',logIn)
 app.use('/auth',newAccestoken)
 app.use('/auth',logOut)
 app.use('/auth/forgot-password',forgertPassword)
+
 app.use('/admin',updateRole)
+app.use('/admin',getUser)
 
 app.use(errorMiddleware)
 

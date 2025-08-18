@@ -1,8 +1,9 @@
 const express = require("express")
 const route = express.Router()
 const updateRoleController = require("../../Controllers/Admin/updateRole.controller")
+const validateJwt = require("../../Middleware/Auth/jwtValidate")
 
-route.patch("/update-role",updateRoleController)
+route.patch("/update-role",validateJwt,updateRoleController)
 
 
 module.exports = route
