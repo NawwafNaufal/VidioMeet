@@ -16,6 +16,10 @@ const changePassword = async (code,email) => {
         if(!getData){
             throw new ResponseError(400,"Email tidak ada")
         }
+
+        await otp.deleteOne({
+            id : resultOtp._id
+        })
     
         const token = jwt.sign({type : 'Token Change Password'},process.env.JWT_KEY,{expiresIn : '1m'})
     

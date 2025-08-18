@@ -3,12 +3,14 @@ const mongoose = require("mongoose")
 const refresTokenDb = new mongoose.Schema({
     token : {
         type: String,
-        required: true
+        required: true,
+        index : true
     },
     userId: {
         type:String,
         ref:'User',
-        required: true
+        required: true,
+        index: true
     },
     expiredAt: {
         type: Date,

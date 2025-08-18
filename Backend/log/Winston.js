@@ -1,8 +1,8 @@
 const winston = require('winston');
 const path = require('path')
 
-
 const logPath = path.resolve(__dirname,"../../logs/combined.log")
+console.log(logPath)
 
 const logger = winston.createLogger({
     level: 'info',
