@@ -17,7 +17,7 @@ const changePassword = async (code,email) => {
             throw new ResponseError(400,"Email tidak ada")
         }
 
-        await otp.deleteOne({
+        await otp.deleteMany({
             id : resultOtp._id
         })
     
