@@ -23,12 +23,12 @@ const errorMiddleware = require("./Middleware/Error/errorMiddleware")
 const app = express()
 app.use(express.json())
 mongooDb()
+app.use(cookie())
 
 
 const PORT = process.env.PORT
 const swaggerDocument = YAML.load('./docs/apiDocs.yaml')
 
-app.use(cookie())
 
 app.get('/Test',validateJwt,roleValidate("member"),(req,res) => {
     res.send("Hello World")
@@ -44,6 +44,12 @@ app.use('/auth/forgot-password',forgertPassword)
 
 app.use('/admin',updateRole)
 app.use('/admin',getUser)
+
+app.use((req,res,next) => {
+    res.status(404).json({
+        message : "Endpoint not found"
+    })
+})
 
 app.use(errorMiddleware)
 
