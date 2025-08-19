@@ -5,10 +5,10 @@ const verifOtp = async (req,res,next) => {
     const {code,email} = req.valiOtp
 
     try {
-        const getData =await otpValidate(code,email)
+        const getData = await otpValidate(code,email)
 
         logger.info(`Registrasi Succes. Username: ${getData.username}. Email: ${getData.email},`)
-        res.status(200).json({
+        res.status(201).json({
             message:"Registrasi Succes",
             data:{
                 username :getData.username,

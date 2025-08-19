@@ -7,12 +7,12 @@ const otpValidate = async (code,email) => {
     
     const verifyOtp = await otp.findOne({code})
     if(!verifyOtp){
-        throw new ResponseError(400,'Code is not valid')
+        throw new ResponseError(401,'Code is not valid')
     }
     
     const dateNow = new Date()
     if(dateNow > verifyOtp.expiresAt){
-        throw new ResponseError(400,'Code otp is Expired')
+        throw new ResponseError(401,'Code otp is Expired')
     }
     
     await otp.deleteOne({

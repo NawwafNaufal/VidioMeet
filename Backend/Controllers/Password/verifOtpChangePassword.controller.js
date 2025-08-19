@@ -8,8 +8,8 @@ const verifOtp =async (req,res,next) => {
 
         res.cookie('changePasswordToken',token,cookieAccesToken)  
     
-        res.status(200).json({
-            message : "done",
+        res.status(202).json({
+            message : "OTP verified successfully",
             data : token
         })
     } catch (error) {
