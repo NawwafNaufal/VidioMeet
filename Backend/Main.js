@@ -13,7 +13,7 @@ const signUp = require("./Routes/Register.route")
 const newAccestoken = require('./Routes/newAccesToken.route')
 const logOut = require("./Routes/logout.route")
 const updateRole = require("./Routes/Admin/updateRole.route")
-const getUser = require("./Routes/getUsers.route")
+const getUser = require("./Routes/Admin/getUsers.route")
 
 const roleValidate = require("./Middleware/Validation/validateRole")
 
