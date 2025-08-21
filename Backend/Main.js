@@ -14,11 +14,13 @@ const newAccestoken = require('./Routes/newAccesToken.route')
 const logOut = require("./Routes/logout.route")
 const updateRole = require("./Routes/Admin/updateRole.route")
 const getUser = require("./Routes/getUsers.route")
+const uploadFile = require("./Routes/File/upload.route")
 
 const roleValidate = require("./Middleware/Validation/validateRole")
 
 const validateJwt = require('./Middleware/Auth/jwtValidate')
 const errorMiddleware = require("./Middleware/Error/errorMiddleware")
+const upload = require("./Middleware/File/multer")
 
 const app = express()
 app.use(express.json())
@@ -44,6 +46,8 @@ app.use('/auth/forgot-password',forgertPassword)
 
 app.use('/admin',updateRole)
 app.use('/admin',getUser)
+
+app.use('/',upload.single("img"),uploadFile)
 
 app.use((req,res,next) => {
     res.status(404).json({
