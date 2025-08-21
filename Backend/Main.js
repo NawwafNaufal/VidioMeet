@@ -47,7 +47,7 @@ app.use('/auth/forgot-password',forgertPassword)
 app.use('/admin',updateRole)
 app.use('/admin',getUser)
 
-app.use('/',upload.single("img"),uploadFile)
+app.use('/',upload.single("data"),uploadFile)
 
 app.use((req,res,next) => {
     res.status(404).json({
