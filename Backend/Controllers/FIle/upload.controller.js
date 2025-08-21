@@ -1,7 +1,13 @@
-const uploadFileController = (req,res,next) => {
+const fileUploadService = require("../../Services/File/upload.service")
+
+const uploadFileController =async (req,res,next) => {
+    const filePath = req.file.path
     try {
+        const {result} = await fileUploadService(filePath)
+
         res.status(200).json({
-            message : "Upload Success"
+            message : "Upload Success",
+            data : result
         })
     } catch (error) {
         return next(error)
