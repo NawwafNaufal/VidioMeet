@@ -13,7 +13,10 @@ const storage = multer.diskStorage({
 
 const upload = multer({
     storage : storage,
-    limits : 100 * 1000 * 1000
+    limits : {
+        fieldSize : 100 * 1000 * 1000,
+        files : 3
+    }
 })
 
 module.exports = upload
