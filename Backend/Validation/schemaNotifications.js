@@ -9,9 +9,13 @@ const schemaNotifications = Joi.object({
                             .required()
                             .min(10)
                             .max(500),
+                    category: Joi.string()
+                            .valid('news','transaction') 
+                            .required(),
                     userId : Joi.string()
                             .length(24)    
-                            .hex()            
+                            .hex()  
+                            .optional()          
 })
 
 module.exports = schemaNotifications
