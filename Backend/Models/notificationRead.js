@@ -2,15 +2,20 @@ const mongoose = require("mongoose")
 
 const notificationsReadDb = new mongoose.Schema({
     isRead : {
-        type : boolean,
+        type : Boolean,
     },
     notificationId : {
-        type : mongoose.Schema.ObjectId(),
+        type : mongoose.Schema.ObjectId,
         ref : "notifications"
     },
     userId : {
-        type : mongoose.Schema.ObjectId(),
+        type : mongoose.Schema.ObjectId,
         ref : "User"
+    },
+    dateRead : {
+        type : Date,
+        defautl : Date.now,
+        required : true
     }
 })
 

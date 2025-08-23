@@ -6,17 +6,23 @@ const notificationsDb = new mongoose.Schema({
         required : true
     },
     detail : {
-        type : Text,
+        type : String,
         required : true
+    },
+    category : {
+        type : String,
+        enum : ["transaction","news"],
+        require : true
     },
     date : {
         type : Date,
-        default : new Date(),
+        default : Date.now,
         required : true
     },
     userId : {
         type : mongoose.Schema.ObjectId,
-        ref : "User"
+        ref : "User",
+        default : null
     }
 })
 
