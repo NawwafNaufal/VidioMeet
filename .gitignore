@@ -2,3 +2,5 @@
 *.log
 **/node_modules/
 **/.env
+Try1.js
+Try2.js
