@@ -19,6 +19,8 @@ const notificationsReadDb = new mongoose.Schema({
     }
 })
 
+notificationsReadDb.index({ notificationId : 1, userId : 1})
+
 const notificationsRead = mongoose.model("notificationsRead",notificationsReadDb,"notificationsRead")
 
 module.exports = notificationsRead

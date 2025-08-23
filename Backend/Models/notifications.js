@@ -22,9 +22,11 @@ const notificationsDb = new mongoose.Schema({
     userId : {
         type : mongoose.Schema.ObjectId,
         ref : "User",
-        default : null
+        default : null,
     }
 })
+
+notificationsDb.index({date : -1,userId : 1})
 
 const notifications = mongoose.model("notifications",notificationsDb,"notifications")
 
