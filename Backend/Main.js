@@ -16,6 +16,7 @@ const updateRole = require("./Routes/Admin/updateRole")
 
 const getUser = require("./Routes/Admin/getUsers")
 const notifications = require("./Routes/Notifications/createNotifications")
+const userNotifications = require("./Routes/Notifications/userNotifications")
 const uploadFile = require("./Routes/File/upload")
 
 
@@ -50,6 +51,7 @@ app.use('/auth/forgot-password',forgertPassword)
 app.use('/admin',updateRole)
 app.use('/admin',getUser)
 app.use('/admin',notifications)
+app.use('/',userNotifications)
 
 app.use('/',upload.single("data"),uploadFile)
 
