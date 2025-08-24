@@ -15,7 +15,7 @@ const logOut = require("./Routes/logout")
 const updateRole = require("./Routes/Admin/updateRole")
 
 const getUser = require("./Routes/Admin/getUsers")
-const notifications = require("./Routes/Admin/notifications")
+const notifications = require("./Routes/Notifications/createNotifications")
 const uploadFile = require("./Routes/File/upload")
 
 
