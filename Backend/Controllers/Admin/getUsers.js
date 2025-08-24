@@ -1,4 +1,4 @@
-const getUsersService = require("../../Services/Admin/getUsers.service")
+const getUsersService = require("../../Services/Admin/getUsers")
 
 const getUsersController = async (req,res,next) => {
         const page = parseInt(req.getUsers.page) || 1

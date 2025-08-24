@@ -1,10 +1,10 @@
 const fullNameValidate = require("../Middleware/Validation/validateSignUp")
 const valiOtp = require("../Middleware/Validation/validateOtp")
-const {signUpController} = require('../Controllers/Auth/RegisterM.controller')
-const verifOtp = require('../Controllers/OTP/VerifOtp.controller')
+const {signUpController} = require('../Controllers/Auth/registerM.')
+const verifOtp = require('../Controllers/OTP/verifOtp')
 const express = require('express')
 const limitApi = require('../Middleware/RateLimit/rateLimitApi')
-const randomNewOtp = require('../Controllers/OTP/generateNewOtp.controller')
+const randomNewOtp = require('../Controllers/OTP/generateNewOtp')
 const limiterOtp = require('../Middleware/RateLimit/rateLimitOtpGenerate')
 
 const routes = express.Router()

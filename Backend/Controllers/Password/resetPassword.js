@@ -1,5 +1,5 @@
 require('dotenv').config()
-const resetPasswordService = require("../../Services/resetPassword.service")
+const resetPasswordService = require("../../Services/resetPassword")
 const logger = require("../../log/Winston")
 
 const forgetPasswordControl =async (req,res,next) => {

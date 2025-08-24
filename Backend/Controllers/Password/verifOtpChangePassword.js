@@ -1,4 +1,4 @@
-const changePassword = require("../../Services/OTP/chagePassword.service")
+const changePassword = require("../../Services/OTP/chagePassword")
 const {cookieAccesToken} = require('../../Utils/Cookie/cookieOptions')
 
 const verifOtp =async (req,res,next) => {

@@ -1,4 +1,4 @@
-const updateRoleService =  require('../../Services/Admin/updateRole.service')
+const updateRoleService =  require('../../Services/Admin/updateRole')
 
 const updateRoleController = async (req,res,next) => {
     const {email,role} = req.body

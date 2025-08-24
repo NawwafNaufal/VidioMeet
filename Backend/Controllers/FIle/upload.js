@@ -1,4 +1,4 @@
-const fileUploadService = require("../../Services/File/upload.service")
+const fileUploadService = require("../../Services/File/upload")
 
 const uploadFileController =async (req,res,next) => {
     const filePath = req.file.path

@@ -1,4 +1,4 @@
-const logOutService = require("../../Services/Auth/logout.service")
+const logOutService = require("../../Services/Auth/logout")
 const {cookieAccesToken,cookieRefreshToken} = require("../../Utils/Cookie/cookieOptions")
 const logger = require("../../log/Winston")
 

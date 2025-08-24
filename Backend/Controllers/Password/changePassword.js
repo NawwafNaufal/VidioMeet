@@ -1,4 +1,4 @@
-const chagePasswordService = require("../../Services/chagePassword.service")
+const chagePasswordService = require("../../Services/chagePassword")
 const {cookieAccesToken} = require("../../Utils/Cookie/cookieOptions")
 
 const changePasssword = async (req,res,next) => {
