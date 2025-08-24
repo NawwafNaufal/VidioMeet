@@ -1,4 +1,4 @@
-const notificationsService = require("../../Services/Admin/notifications")
+const notificationsService = require("../../Services/Notifications/createNotifications")
 
 const notificationsContrroler = async (req,res,next) => {
     const {title,detail,category} = req.notif
