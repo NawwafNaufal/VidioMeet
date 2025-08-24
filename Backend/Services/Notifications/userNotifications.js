@@ -1,6 +1,6 @@
 const notifications = require("../../Models/notifications")
 
-const userNotificationsService = async (req) => {
+const userNotificationsService = async (req,category) => {
         const user = req.result
 
         const {_id} = user
@@ -14,7 +14,7 @@ const userNotificationsService = async (req) => {
                     userId : null
                 }
             ]
-        })
+        }).where(category)
         return notifUser
 }
 

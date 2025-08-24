@@ -1,11 +1,16 @@
 const userNotificationsService = require("../../Services/Notifications/userNotifications")
 
 const userNotificationsContrroller = async (req,res,next) => {
+    const {category} = req.userNotif
+
+    const filter = category ? {category} : {}
+
     try {
-        const result = await userNotificationsService(req)
+        const result = await userNotificationsService(req,filter)
 
         res.status(200).json({
             message : "Data notifications",
+            category : category || "All",
             data : result 
         })      
     } catch (error) {
