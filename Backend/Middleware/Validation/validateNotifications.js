@@ -1,7 +1,7 @@
 const schemaNotifications = require("../../Validation/schemaNotifications")
 
 const validateNotifications = (req,res,next) => {
-    const data = {...req.body,...req.params}
+    const data = {...req.body,...req.query}
     const {error,value} = schemaNotifications.validate(data,{abortEarly : false})
 
     if(error){

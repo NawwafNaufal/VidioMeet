@@ -3,6 +3,6 @@ const route = express.Router()
 const notificationsContrroler = require("../../Controllers/Notifications/createNotificationsA")
 const validateNotifications = require("../../Middleware/Validation/validateNotifications")
 
-route.post("/notifications/:userId",validateNotifications,notificationsContrroler)
+route.post("/notifications",validateNotifications,notificationsContrroler)
 
 module.exports = route
