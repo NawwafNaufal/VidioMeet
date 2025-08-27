@@ -3,10 +3,8 @@ const userNotificationsService = require("../../Services/Notifications/userNotif
 const userNotificationsContrroller = async (req,res,next) => {
     const {category} = req.userNotif
 
-    const filter = category ? {category} : {}
-
     try {
-        const result = await userNotificationsService(req,filter)
+        const result = await userNotificationsService(req,category)
 
         res.status(200).json({
             message : "Data notifications",
