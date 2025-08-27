@@ -5,6 +5,8 @@ const userNotificationsService = async (req,category) => {
 
         const {_id} = user
 
+        const filter = category ? {category} : {}
+
         const notifUser = await notifications.find({
             $or : [
                 {
@@ -14,7 +16,8 @@ const userNotificationsService = async (req,category) => {
                     userId : null
                 }
             ]
-        }).where(category)
+        }).where(filter)
+
         return notifUser
 }
 

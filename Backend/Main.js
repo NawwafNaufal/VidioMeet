@@ -17,8 +17,8 @@ const updateRole = require("./Routes/Admin/updateRole")
 const getUser = require("./Routes/Admin/getUsers")
 const notifications = require("./Routes/Notifications/createNotifications")
 const userNotifications = require("./Routes/Notifications/userNotifications")
+const readNotifications = require("./Routes/Notifications/readNotidications")
 const uploadFile = require("./Routes/File/upload")
-
 
 const roleValidate = require("./Middleware/Validation/validateRole")
 
@@ -52,6 +52,7 @@ app.use('/admin',updateRole)
 app.use('/admin',getUser)
 app.use('/admin',notifications)
 app.use('/',userNotifications)
+app.use('/',readNotifications)
 
 app.use('/',upload.single("data"),uploadFile)
 
