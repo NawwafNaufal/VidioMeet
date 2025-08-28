@@ -44,11 +44,7 @@ const userNotificationsService = async (req,category,isread) => {
                 $addFields : {
                     statusRead : {
                         $gt : [{$size : "$notifUserRead"},0]
-                    }
-                }
-            },
-            {
-                $addFields : {
+                    },
                     dateRead : {
                         $cond : {
                             if : {$gt : [{$size : "$notifUserRead"},0]},
@@ -59,17 +55,24 @@ const userNotificationsService = async (req,category,isread) => {
                 }
             },
             {
-                $match : filterIsRead
-            },
-            {
-                $project : {notifUserRead : 0}
-            },
-            {
-                $sort : {date : -1}
+                $facet : {
+                    list : [
+                        {$match : filterIsRead},
+                        {$project : {notifUserRead : 0}},
+                        {$sort : {date : -1}}
+                    ],
+                    unreadCount : [
+                        {$match : {statusRead : false}},
+                        {$count : "total"}
+                    ]
+                }
             }
         ])
 
-        return notifUser
+        const [{list,unreadCount}] = notifUser
+        const totalUnread = unreadCount[0]?.total || o
+        
+        return {list,totalUnread}
 }
 
 module.exports = userNotificationsService
