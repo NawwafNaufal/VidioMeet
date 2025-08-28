@@ -23,7 +23,7 @@ const errorMiddleware = async (err,req,res,next) => {
     else {
         logger.error(err.message + err.stack)
         return res.status(500).json({
-            errors : err.message
+            errors : "Server internal error"
         })
     }
 }
