@@ -1,10 +1,13 @@
 const notifications = require("../../Models/notifications")
 const mongoose = require("mongoose")
 
-const userNotificationsService = async (req,category) => {
-        const userId = new mongoose.Types.ObjectId(String(req.result._id))
+const userNotificationsService = async (req,category,isread) => {
+    const filter = category ? {category} : {}
 
-        const filter = category ? {category} : {}
+    const convert = isread !== undefined ? JSON.parse(isread) : undefined
+    const filterIsRead = convert !== undefined ? { statusRead: convert } : {}
+
+    const userId = new mongoose.Types.ObjectId(String(req.result._id))
 
         const notifUser = await notifications.aggregate([
             {
@@ -54,6 +57,9 @@ const userNotificationsService = async (req,category) => {
                         }
                     }
                 }
+            },
+            {
+                $match : filterIsRead
             },
             {
                 $project : {notifUserRead : 0}
