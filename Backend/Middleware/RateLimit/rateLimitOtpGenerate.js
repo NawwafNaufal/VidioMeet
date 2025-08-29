@@ -6,7 +6,7 @@ const limiterOtp = rateLimit ({
                 standardHeaders :true,
                 legacyHeaders : false,
                 message : {
-                        statut: 249,
+                        statut: 429,
                         message:"Request to many, please try again later"
                 } 
 })
