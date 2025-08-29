@@ -70,7 +70,7 @@ const userNotificationsService = async (req,category,isread) => {
         ])
 
         const [{list,unreadCount}] = notifUser
-        const totalUnread = unreadCount[0]?.total || o
+        const totalUnread = unreadCount[0]?.total || 0
         
         return {list,totalUnread}
 }

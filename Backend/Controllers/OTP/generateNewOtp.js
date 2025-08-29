@@ -1,7 +1,6 @@
 const randomNewOtpService = require("../../Services/randomNewOtp")
 
 const randomNewOtp = async (req,res,next) => {
-
     try {
         const result =await randomNewOtpService()
     

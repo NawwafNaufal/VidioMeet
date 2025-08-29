@@ -1,7 +1,6 @@
 const valiSignup = require('../../Services/ValidateSignUp')
 const logger = require('../../log/Winston')
 
-
 const signUpController = async (req,res,next) => {
     const {username,email,password,dateOfBirth} = req.fullNameValidate
 

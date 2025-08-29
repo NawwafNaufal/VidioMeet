@@ -20,8 +20,7 @@ const validateLogInService = async (emailOrUsername,password) => {
         const validateHashing = await bcrypt.compare(password,getDataUser.password)
 
         if(!validateHashing) {
-            throw new ResponseError(401,"Wrong Password")
-                    
+            throw new ResponseError(401,"Wrong Password")       
         }
                         
         const payload = {

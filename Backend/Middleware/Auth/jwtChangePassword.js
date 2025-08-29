@@ -17,9 +17,9 @@ const verifJwtChangePassword = (req,res,next) => {
                 case "JsonWebTokenError":
                     return next(new ResponseError(403,'Invalid token'))
                 case "NotBeforeError":
-                    return new(ResponseError(403,'Token not active yet'))
+                    return next(new ResponseError(403,'Token not active yet'))
                 default :
-                    return new(ResponseError(500,'internal token error'))
+                    return next(new ResponseError(500,'internal token error'))
             }
         }
         next()

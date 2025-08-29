@@ -15,7 +15,6 @@ const getUsersService =async (page,limit,filterRole,filterCreatedAt,filterDateOf
             end.setDate(end.getDate() + 1)
     
             const t = filter.createdAt = {$gte : start, $lt : end}
-            console.log(t)
         }
         if(filterDateOfBirth){
             const convert = new Date(filterDateOfBirth)
