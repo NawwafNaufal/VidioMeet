@@ -17,7 +17,7 @@ const refresTokenDb = new mongoose.Schema({
         default: Date.now,
         expires: '30d'
     }
-})
+},{timestamps : true})
 
 const refreshToken = mongoose.model('refreshToken',refresTokenDb,'refreshToken')
 

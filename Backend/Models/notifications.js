@@ -24,7 +24,7 @@ const notificationsDb = new mongoose.Schema({
         ref : "User",
         default : null,
     }
-})
+},{timestamps : true})
 
 notificationsDb.index({date : -1,userId : 1})
 

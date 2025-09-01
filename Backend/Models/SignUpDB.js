@@ -42,12 +42,8 @@ const UserSchema = new Mongoose.Schema({
         endDate : {
             type : Date
         }
-    },
-    createdAt : {
-        type : Date,
-        default : Date.now
     }
-})
+},{timestamps : true})
 
 const Users = Mongoose.model("User",UserSchema,'User')
 

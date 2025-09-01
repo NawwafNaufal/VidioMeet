@@ -29,7 +29,7 @@ const promo = new mongoose.Schema({
         type : mongoose.Schema.ObjectId,
         ref : "premium"
     }
-})
+},{timestamps : true})
 
 const promoPremium = mongoose.model("promo",promo,"promo")
 
