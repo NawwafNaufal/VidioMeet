@@ -5,9 +5,9 @@ const limitApi = rateLimit ({
                 max : 5,
                 standardHeaders :true,
                 legacyHeaders : false,
-                keyGenerator : (req,res) => {
-                        return req.result?._id || req.ip
-                },
+                // keyGenerator : (req,res) => {
+                //         return req.result?._id || req.ip
+                // },
                 message : {
                         statut: 429,
                         message:"Request to many, please try again later"

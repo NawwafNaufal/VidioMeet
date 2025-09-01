@@ -20,6 +20,9 @@ const userNotifications = require("./Routes/Notifications/userNotifications")
 const readNotifications = require("./Routes/Notifications/readNotidications")
 const uploadFile = require("./Routes/File/upload")
 
+const premiumPlan = require("./Routes/Subscription/premiumPlan")
+const promo = require("./Routes/Subscription/promo")
+
 const roleValidate = require("./Middleware/Validation/validateRole")
 
 const validateJwt = require('./Middleware/Auth/jwtValidate')
@@ -51,6 +54,9 @@ app.use('/auth/forgot-password',forgertPassword)
 app.use('/admin',updateRole)
 app.use('/admin',getUser)
 app.use('/admin',notifications)
+app.use('/admin',premiumPlan)
+app.use('/admin',promo)
+
 app.use('/',userNotifications)
 app.use('/',readNotifications)
 

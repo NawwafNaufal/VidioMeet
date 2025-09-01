@@ -20,7 +20,7 @@ const otpCodeDb = new mongoose.Schema({
         type:String,
         enum:['signUpOtp','resetPasswordOtp']
     },
-})
+},{timestamps : true})
 
 
 const otp = mongoose.model('Otp',otpCodeDb,'Otp')

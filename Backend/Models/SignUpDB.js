@@ -1,6 +1,6 @@
 const Mongoose = require('mongoose')
 
-const UserScema = new Mongoose.Schema({
+const UserSchema = new Mongoose.Schema({
     username : {
         type : String,
         required : true,
@@ -31,12 +31,20 @@ const UserScema = new Mongoose.Schema({
         enum: ['admin','host','member'],
         default: 'member'
     },
-    createdAt : {
-        type : Date,
-        default : Date.now
+    subscription : {
+        premiumPlaId : {
+            type : Mongoose.Schema.ObjectId,
+            ref : "premium"
+        },
+        startDate : {
+            type : Date,
+        },
+        endDate : {
+            type : Date
+        }
     }
-})
+},{timestamps : true})
 
-const Users = Mongoose.model("User",UserScema,'User')
+const Users = Mongoose.model("User",UserSchema,'User')
 
 module.exports = Users

@@ -1,9 +1,7 @@
-const express = require("express")
-const route = express.Router()
+const routes  = require("../Utils/Server/route")
 const getNewAccesToken = require('../Controllers/Auth/newAccesToken')
 const validateNewAccesToken = require("../Middleware/Auth/jwtNewAccesToken")
 
-route.get("/new-access-token",validateNewAccesToken,getNewAccesToken)
+routes.get("/new-access-token",validateNewAccesToken,getNewAccesToken)
 
-
-module.exports = route
+module.exports = routes

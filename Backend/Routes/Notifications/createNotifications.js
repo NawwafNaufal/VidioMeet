@@ -1,8 +1,7 @@
-const express = require("express")
-const route = express.Router()
+const routes  = require("../../Utils/Server/route")
 const notificationsContrroler = require("../../Controllers/Notifications/createNotificationsA")
 const validateNotifications = require("../../Middleware/Validation/validateNotifications")
 
-route.post("/notifications",validateNotifications,notificationsContrroler)
+routes.post("/notifications",validateNotifications,notificationsContrroler)
 
-module.exports = route
+module.exports = routes

@@ -17,7 +17,7 @@ const notificationsReadDb = new mongoose.Schema({
         defautl : Date.now,
         required : true
     }
-})
+},{timestamps : true})
 
 const notificationsRead = mongoose.model("notificationsRead",notificationsReadDb,"notificationsRead")
 
