@@ -9,6 +9,10 @@ const promo = new mongoose.Schema({
         type : Number,
         required : true
     },
+    event : {
+        type : String,
+        required : true
+    },
     startDate : {
         type : Date,
         required : true
@@ -16,6 +20,10 @@ const promo = new mongoose.Schema({
     endDate : {
         type : Date,
         required : true
+    },
+    isActive : {
+        type : Boolean,
+        default : true
     },
     premiumPlanId : {
         type : mongoose.Schema.ObjectId,
