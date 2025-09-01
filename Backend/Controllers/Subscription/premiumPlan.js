@@ -1,4 +1,4 @@
-const premiumPlanService = require("../../Services/Subscription/premiumPlan")
+const premiumPlanService = require("../../Services/Subscription/createPremiumPlan")
 
 const premiumPlanController = async (req,res,next) => {
     const {name,price,duration} = req.body

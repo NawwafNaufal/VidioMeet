@@ -1,4 +1,4 @@
-const promoService = require("../../Services/Subscription/promo")
+const promoService = require("../../Services/Subscription/createPromo")
 
 const promoController = async (req,res,next) => {
     const {name,discount,event,startDate,endDate} = req.body
