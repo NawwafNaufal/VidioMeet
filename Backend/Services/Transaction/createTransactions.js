@@ -5,35 +5,51 @@ const {nanoid} = require("nanoid")
 const ResponseError = require("../../Error/responseError")
 const Users = require("../../Models/SignUpDB")
 
-const createTransactionService = async (premiumId,transactionNumber,gross_amount,status,paymentMethod,date) => {
+const createTransactionService = async (premiumId,gross_amount,status,paymentMethod,date) => {
 
     const {_id} = req.result
 
-    const checkId = await Users.findById({_id})
+    const user = await Users.findById({_id})
 
-    if(!checkId) {
+    if(!user) {
         throw new ResponseError(400,"id is not exist")
     }
 
-    let snap = new midtransClient.Snap({
-        isProduction : false,
-        clientKey : process.env.MIDTRANS_CLIENT_KEY,
-        serverKey : process.env.MIDTRANS_SERVER_KEY
-    })
+    const transactionNumber = `TRX-${nanoid(10)}`
     
-    const parameter = new transaction({
+    const data = new transaction({
         userId : _id,
         premiumId,
-        transactionNumber : nanoid(10),
+        transactionNumber,
         gross_amount,
         status,
         paymentMethod,
         date
     })
-    
-    await parameter.save()
 
-    snap.createTransaction(parameter)
+    await data.save()
+    
+    let snap = new midtransClient.Snap({
+        isProduction : false,
+        clientKey : process.env.MIDTRANS_CLIENT_KEY,
+        serverKey : process.env.MIDTRANS_SERVER_KEY
+    })
+
+    const parameter = {
+        transactionDetails : {
+            orderId : transactionNumber,
+            gross_amount : gross_amount
+        },
+        customerDetails : {
+            name : user.username,
+            email : user.email,
+        },
+    }
+    
+
+    const midtransResponse = await snap.createTransaction(parameter)
+
+    return {data,midtransResponse}
 }
 
 module.exports = createTransactionService

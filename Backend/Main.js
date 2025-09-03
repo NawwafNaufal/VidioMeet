@@ -29,6 +29,8 @@ const validateJwt = require('./Middleware/Auth/jwtValidate')
 const errorMiddleware = require("./Middleware/Error/errorMiddleware")
 const upload = require("./Middleware/File/multer")
 
+const transactions = require("./Routes/Transaction/userTransactions")
+
 const app = express()
 app.use(express.json())
 mongooDb()
@@ -37,7 +39,6 @@ app.use(cookie())
 
 const PORT = process.env.PORT
 const swaggerDocument = YAML.load('./docs/apiDocs.yaml')
-
 
 app.get('/Test',validateJwt,roleValidate("member"),(req,res) => {
     res.send("Hello World")
@@ -59,6 +60,8 @@ app.use('/admin',promo)
 
 app.use('/',userNotifications)
 app.use('/',readNotifications)
+
+app.use('/',transactions)
 
 app.use('/',upload.single("data"),uploadFile)
 
