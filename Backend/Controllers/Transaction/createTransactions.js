@@ -2,10 +2,11 @@ const createTransactionService =  require("../../Services/Transaction/createTran
 
 const createTransactionController = async (req,res,next) => {
 
-    const {premiumId,transactionNumber,gross_amount,status,paymentMethod,date} = req.body
+    const {premiumId,gross_amount,paymentMethod} = req.body
+    const {_id} = req.result
 
     try {
-        const result = await createTransactionService(premiumId,gross_amount,status,paymentMethod,date)
+        const result = await createTransactionService(_id,premiumId,gross_amount,paymentMethod)
     
         res.status(200).json({
             message : "transaction proccess",

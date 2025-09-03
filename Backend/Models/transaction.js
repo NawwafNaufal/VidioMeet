@@ -29,7 +29,7 @@ const transactionDb = new Mongoose.Schema({
         type : Mongoose.Schema.ObjectId,
         ref : "premium"
     }
-})
+},{timestamps : true})
 
 const transaction = Mongoose.model("transaction",transactionDb,"transaction")
 

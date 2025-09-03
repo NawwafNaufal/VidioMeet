@@ -5,10 +5,7 @@ const {nanoid} = require("nanoid")
 const ResponseError = require("../../Error/responseError")
 const Users = require("../../Models/SignUpDB")
 
-const createTransactionService = async (premiumId,gross_amount,status,paymentMethod,date) => {
-
-    const {_id} = req.result
-
+const createTransactionService = async (_id,premiumId,gross_amount,paymentMethod) => {
     const user = await Users.findById({_id})
 
     if(!user) {
@@ -22,31 +19,28 @@ const createTransactionService = async (premiumId,gross_amount,status,paymentMet
         premiumId,
         transactionNumber,
         gross_amount,
-        status,
+        status : "pending",
         paymentMethod,
-        date
     })
 
     await data.save()
     
     let snap = new midtransClient.Snap({
         isProduction : false,
-        clientKey : process.env.MIDTRANS_CLIENT_KEY,
         serverKey : process.env.MIDTRANS_SERVER_KEY
     })
 
     const parameter = {
-        transactionDetails : {
-            orderId : transactionNumber,
+        transaction_details : {
+            order_id : transactionNumber,
             gross_amount : gross_amount
         },
-        customerDetails : {
-            name : user.username,
+        customer_details : {
+            username : user.username,
             email : user.email,
         },
     }
     
-
     const midtransResponse = await snap.createTransaction(parameter)
 
     return {data,midtransResponse}
