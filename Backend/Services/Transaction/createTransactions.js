@@ -27,22 +27,26 @@ const createTransactionService = async (_id,premiumId,gross_amount,paymentMethod
     
     let snap = new midtransClient.Snap({
         isProduction : false,
-        serverKey : process.env.MIDTRANS_SERVER_KEY
+        serverKey : process.env.MIDTRANS_SERVER_KEY,
+        clientKey: process.env.MIDTRANS_CLIENT_KEY,
     })
 
-    const parameter = {
-        transaction_details : {
-            order_id : transactionNumber,
-            gross_amount : gross_amount
+    let parameter = {
+        "transaction_details": {
+            "order_id": transactionNumber,
+            "gross_amount": gross_amount
         },
-        customer_details : {
-            username : user.username,
-            email : user.email,
+        "customer_details" : {
+            "username" : user.username,
+            "email" : user.email,
         },
     }
+
+    console.log(parameter)
     
     const midtransResponse = await snap.createTransaction(parameter)
-
+    console.log(midtransResponse)
+    
     return {data,midtransResponse}
 }
 
