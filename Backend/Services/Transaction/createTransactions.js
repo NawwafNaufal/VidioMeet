@@ -5,7 +5,7 @@ const {nanoid} = require("nanoid")
 const ResponseError = require("../../Error/responseError")
 const Users = require("../../Models/SignUpDB")
 
-const createTransactionService = async (_id,premiumId,gross_amount,paymentMethod,name) => {
+const createTransactionService = async (_id,premiumId,gross_amount,name) => {
     const user = await Users.findById({_id})
 
     if(!user) {
@@ -20,7 +20,7 @@ const createTransactionService = async (_id,premiumId,gross_amount,paymentMethod
         transactionNumber,
         gross_amount,
         status : "pending",
-        paymentMethod,
+        paymentMethod : "null",
     })
 
     await data.save()

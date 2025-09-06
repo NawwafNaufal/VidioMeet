@@ -11,7 +11,6 @@ const transactionDb = new Mongoose.Schema({
     },
     paymentMethod : {
         type : String,
-        required : true
     },
     gross_amount : {
         type : String,
