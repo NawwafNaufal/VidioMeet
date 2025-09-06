@@ -5,7 +5,7 @@ const {nanoid} = require("nanoid")
 const ResponseError = require("../../Error/responseError")
 const Users = require("../../Models/SignUpDB")
 
-const createTransactionService = async (_id,premiumId,gross_amount,paymentMethod) => {
+const createTransactionService = async (_id,premiumId,gross_amount,name) => {
     const user = await Users.findById({_id})
 
     if(!user) {
@@ -14,22 +14,22 @@ const createTransactionService = async (_id,premiumId,gross_amount,paymentMethod
 
     const transactionNumber = `TRX-${nanoid(10)}`
     
-    const data = new transaction({
-        userId : _id,
-        premiumId,
-        transactionNumber,
-        gross_amount,
-        status : "pending",
-        paymentMethod,
-    })
-
-    await data.save()
     
     let snap = new midtransClient.Snap({
         isProduction : false,
         serverKey : process.env.MIDTRANS_SERVER_KEY,
         clientKey: process.env.MIDTRANS_CLIENT_KEY,
     })
+        const data = new transaction({
+            userId : _id,
+            premiumId,
+            transactionNumber,
+            gross_amount,
+            status : "pending",
+            paymentMethod : "null",
+        })
+    
+        await data.save()
 
     let parameter = {
         "transaction_details": {
@@ -40,12 +40,20 @@ const createTransactionService = async (_id,premiumId,gross_amount,paymentMethod
             "username" : user.username,
             "email" : user.email,
         },
+        "item_details": [{
+            "id": premiumId,
+            "quantity": 1,
+            "price": gross_amount,
+            "name": name, 
+        }],
+        "enabled_payments": [
+            "credit_card","bca_klikbca", "bca_klikpay",
+            "bri_epay","permata_va","bca_va", "bni_va", 
+            "bri_va","other_va", "gopay","indomaret",
+            "shopeepay","other_qris","alfamart"],
     }
 
-    console.log(parameter)
-    
     const midtransResponse = await snap.createTransaction(parameter)
-    console.log(midtransResponse)
     
     return {data,midtransResponse}
 }

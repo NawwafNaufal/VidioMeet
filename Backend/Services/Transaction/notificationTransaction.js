@@ -1,6 +1,6 @@
 const midtransClient = require('midtrans-client'); 
 const transaction = require("../../Models/transaction")
-require("dotenv")
+require("dotenv").config()
 
 const notificationMidtransServices = async (order_id) => {
     let coreApi = new midtransClient.CoreApi({
@@ -10,6 +10,8 @@ const notificationMidtransServices = async (order_id) => {
     })
 
     const transactionStatus = await coreApi.transaction.status(order_id)
+    const paymentType = transactionStatus.payment_type
+    const transactionId = transactionStatus.transaction_id
 
     let status = "pending"
     if(transactionStatus.transaction_status === "settlement" || transactionStatus.transaction_status === "capture"){
@@ -20,12 +22,10 @@ const notificationMidtransServices = async (order_id) => {
 
     const result = await transaction.findOneAndUpdate(
         {transactionNumber: order_id },
-        {status},
+        {status,paymentMethod : paymentType,transactionId},
         { new: true }
     )
 
-
-    
     return {result,transactionStatus}
 }
 
