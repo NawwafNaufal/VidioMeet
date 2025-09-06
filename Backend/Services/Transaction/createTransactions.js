@@ -14,22 +14,22 @@ const createTransactionService = async (_id,premiumId,gross_amount,name) => {
 
     const transactionNumber = `TRX-${nanoid(10)}`
     
-    const data = new transaction({
-        userId : _id,
-        premiumId,
-        transactionNumber,
-        gross_amount,
-        status : "pending",
-        paymentMethod : "null",
-    })
-
-    await data.save()
     
     let snap = new midtransClient.Snap({
         isProduction : false,
         serverKey : process.env.MIDTRANS_SERVER_KEY,
         clientKey: process.env.MIDTRANS_CLIENT_KEY,
     })
+        const data = new transaction({
+            userId : _id,
+            premiumId,
+            transactionNumber,
+            gross_amount,
+            status : "pending",
+            paymentMethod : "null",
+        })
+    
+        await data.save()
 
     let parameter = {
         "transaction_details": {
