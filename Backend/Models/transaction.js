@@ -7,7 +7,7 @@ const transactionDb = new Mongoose.Schema({
     },
     status : {
         type : String,
-        enum : ['pending','success','failed','canceled']
+        enum : ['pending','success','failed','cancelled']
     },
     paymentMethod : {
         type : String,

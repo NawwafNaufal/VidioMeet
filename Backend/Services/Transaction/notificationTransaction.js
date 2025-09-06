@@ -1,6 +1,6 @@
 const midtransClient = require('midtrans-client'); 
 const transaction = require("../../Models/transaction")
-require("dotenv")
+require("dotenv").config()
 
 const notificationMidtransServices = async (order_id) => {
     let coreApi = new midtransClient.CoreApi({
@@ -24,8 +24,6 @@ const notificationMidtransServices = async (order_id) => {
         { new: true }
     )
 
-
-    
     return {result,transactionStatus}
 }
 
