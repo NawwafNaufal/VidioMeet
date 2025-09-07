@@ -1,8 +1,10 @@
 const midtransClient = require('midtrans-client'); 
 const transaction = require("../../Models/transaction")
+const Users = require("../../Models/SignUpDB")
 require("dotenv").config()
+const cache = require("../../Utils/Cache/cache")
 
-const notificationMidtransServices = async (order_id) => {
+const notificationMidtransServices = async (order_id,id) => {
     let coreApi = new midtransClient.CoreApi({
         isProduction : false,
         serverKey : process.env.MIDTRANS_SERVER_KEY,
@@ -19,6 +21,29 @@ const notificationMidtransServices = async (order_id) => {
     }else if(transactionStatus.transaction_status === "cancel" || transactionStatus.transaction_status === "expire"){
         status = "failed"
     }
+    
+    const startDate = {}
+    const endDate = {}
+    const date = new Date()
+    
+    const getPremiumId = cache.get(id)
+    console.log(getPremiumId)
+    if(getPremiumId === "68bce2d44db3ed0c31449d33"){
+        startDate.startDate = date
+        endDate.endDate = new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000)
+    }
+    
+        console.log(startDate)
+        console.log(endDate)
+        console.log(id)
+    
+    const userSubsription = await Users.updateOne(
+        {_id : id},
+        {$set : [
+            {premiumPlaId : getPremiumId},{startDate},{endDate}
+        ]}
+    )
+    console.log(userSubsription)
 
     const result = await transaction.findOneAndUpdate(
         {transactionNumber: order_id },
@@ -26,7 +51,7 @@ const notificationMidtransServices = async (order_id) => {
         { new: true }
     )
 
-    return {result,transactionStatus}
+    return {result,transactionStatus,userSubsription}
 }
 
 module.exports = notificationMidtransServices

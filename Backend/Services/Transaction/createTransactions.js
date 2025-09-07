@@ -4,6 +4,7 @@ const transaction  = require("../../Models/transaction")
 const {nanoid} = require("nanoid")
 const ResponseError = require("../../Error/responseError")
 const Users = require("../../Models/SignUpDB")
+const cache = require("../../Utils/Cache/cache")
 
 const createTransactionService = async (_id,premiumId,gross_amount,name) => {
     const user = await Users.findById({_id})
@@ -13,7 +14,6 @@ const createTransactionService = async (_id,premiumId,gross_amount,name) => {
     }
 
     const transactionNumber = `TRX-${nanoid(10)}`
-    
     
     let snap = new midtransClient.Snap({
         isProduction : false,
@@ -30,6 +30,8 @@ const createTransactionService = async (_id,premiumId,gross_amount,name) => {
         })
     
         await data.save()
+    
+        cache.set(_id,premiumId)
 
     let parameter = {
         "transaction_details": {
@@ -52,6 +54,8 @@ const createTransactionService = async (_id,premiumId,gross_amount,name) => {
             "bri_va","other_va", "gopay","indomaret",
             "shopeepay","other_qris","alfamart"],
     }
+
+    console.log(parameter)
 
     const midtransResponse = await snap.createTransaction(parameter)
     

@@ -2,9 +2,10 @@ const notificationMidtransServices = require("../../Services/Transaction/notific
 
 const notificationMidtransController = async (req,res,next) => {
     const { order_id } = req.body;
+    const {_id} = req.result
 
     try {
-        const result = await notificationMidtransServices(order_id);
+        const result = await notificationMidtransServices(order_id,_id);
         res.status(200).json({
             message: "Notification processed",
             data : result
