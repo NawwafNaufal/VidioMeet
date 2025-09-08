@@ -33,17 +33,13 @@ const notificationMidtransServices = async (order_id,id) => {
         endDate.endDate = new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000)
     }
     
-        console.log(startDate)
-        console.log(endDate)
-        console.log(id)
-    
     const userSubsription = await Users.updateOne(
         {_id : id},
-        {$set : [
-            {premiumPlaId : getPremiumId},{startDate},{endDate}
-        ]}
+        {$set : {
+            premiumPlaId : getPremiumId,startDate,endDate
+            }
+        }
     )
-    console.log(userSubsription)
 
     const result = await transaction.findOneAndUpdate(
         {transactionNumber: order_id },
