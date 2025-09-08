@@ -32,6 +32,14 @@ const notificationMidtransServices = async (order_id,id) => {
         startDate.startDate = date
         endDate.endDate = new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000)
     }
+    if(getPremiumId === "68bce2d44db3ed0c31449d33"){
+        startDate.startDate = date
+        endDate.endDate = new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000)
+    }
+    if(getPremiumId === "68bce2d44db3ed0c31449d33"){
+        startDate.startDate = date
+        endDate.endDate = new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000)
+    }
     
     const userSubsription = await Users.updateOne(
         {_id : id},
