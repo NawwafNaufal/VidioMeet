@@ -4,7 +4,6 @@ const ResponseError = require("../Error/errorMiddleware")
 const roleValidate = (roleApp) => {
         return (req,res,next) => {
             const token = req.result
-            console.log(token)
 
             if(!token){
                 throw new ResponseError (401,'Token is required')

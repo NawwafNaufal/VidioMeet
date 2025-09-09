@@ -2,7 +2,12 @@ const valiSignup = require('../../Services/ValidateSignUp')
 const logger = require('../../log/Winston')
 
 const signUpController = async (req,res,next) => {
-    const {username,email,password,dateOfBirth} = req.fullNameValidate
+    console.log('=== DEBUG CONTROLLER ===')
+    console.log('req.body:', req.body)
+    console.log('req.headers:', req.headers)
+    console.log('========================')
+    const {username,email,password,dateOfBirth} = req.body
+    console.log(username,email,password,dateOfBirth)
 
     try {      
         const {otpCode,otpResult} =await valiSignup(username,email,password,dateOfBirth)  
@@ -18,4 +23,4 @@ const signUpController = async (req,res,next) => {
     }
 }
 
-module.exports = {signUpController}
+module.exports = signUpController
