@@ -3,11 +3,11 @@ const Joi = require('joi')
 const schema = Joi.object({
         username: Joi.string()
             .min(3)
-            .max(45)
+            .max(15)
             .required()
             .messages({
                 'string.min' : 'Minimal 3 Character',
-                'string.max' : 'Maximal 8 Character',
+                'string.max' : 'Maximal 15 Character',
                 'string.empty' : 'Colum not be empty',
                 'any.required' : 'the Username column must be filled in '
             }),

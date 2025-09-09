@@ -27,16 +27,27 @@ const notificationMidtransServices = async (order_id,id) => {
     const date = new Date()
     
     const getPremiumId = cache.get(id)
-    console.log(getPremiumId)
-    if(getPremiumId === "68bce2d44db3ed0c31449d33"){
+
+    const alias = new Map([
+        ["Mounthin","68bce2d44db3ed0c31449d33"],
+        ["Threesongs","68bce2eb4db3ed0c31449d35"],
+        ["Sixbloods","68bce3334db3ed0c31449d37"],
+        ["Yearsir","68bce35d4db3ed0c31449d39"],
+    ])
+
+    if(getPremiumId === alias.get("Mounthin")){
         startDate.startDate = date
         endDate.endDate = new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000)
     }
-    if(getPremiumId === "68bce2d44db3ed0c31449d33"){
+    if(getPremiumId === "68bce2eb4db3ed0c31449d35"){
         startDate.startDate = date
         endDate.endDate = new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000)
     }
-    if(getPremiumId === "68bce2d44db3ed0c31449d33"){
+    if(getPremiumId === "68bce3334db3ed0c31449d37"){
+        startDate.startDate = date
+        endDate.endDate = new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000)
+    }
+    if(getPremiumId === "68bce35d4db3ed0c31449d39"){
         startDate.startDate = date
         endDate.endDate = new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000)
     }
