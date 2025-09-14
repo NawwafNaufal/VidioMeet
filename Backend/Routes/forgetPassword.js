@@ -1,4 +1,6 @@
-const routes  = require("../Utils/Server/route")
+const express = require("express")
+const routes = express.Router()
+
 const forgetPasswordControl = require("../Controllers/Password/resetPassword")
 const verifJwtChangePassword = require('../Middleware/Auth/jwtChangePassword')
 const verifOtp = require('../Controllers/Password/verifOtpChangePassword')

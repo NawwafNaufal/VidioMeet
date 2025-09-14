@@ -1,4 +1,6 @@
-const routes = require("../../Utils/Server/route")
+const express = require("express")
+const routes = express.Router()
+
 const premiumPlanController = require("../../Controllers/Subscription/premiumPlan")
 const patchPremiumController = require("../../Controllers/Subscription/patchPremiumPlan")
 const deletePremiumPlanController = require("../../Controllers/Subscription/deletePremiumPlan")
