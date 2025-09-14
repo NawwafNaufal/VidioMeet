@@ -1,4 +1,6 @@
-const routes  = require("../../Utils/Server/route")
+const express = require("express")
+const routes = express.Router()
+
 const updateRoleController = require("../../Controllers/Admin/updateRole")
 const validateJwt = require("../../Middleware/Auth/jwtValidate")
 

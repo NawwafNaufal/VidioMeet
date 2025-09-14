@@ -1,4 +1,6 @@
-const routes  = require("../Utils/Server/route")
+const express = require("express")
+const routes = express.Router()
+
 const getNewAccesToken = require('../Controllers/Auth/newAccesToken')
 const validateNewAccesToken = require("../Middleware/Auth/jwtNewAccesToken")
 
