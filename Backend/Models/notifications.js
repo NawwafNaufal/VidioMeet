@@ -12,7 +12,7 @@ const notificationsDb = new mongoose.Schema({
     category : {
         type : String,
         enum : ["transaction","news"],
-        require : true
+        required : true
     },
     date : {
         type : Date,

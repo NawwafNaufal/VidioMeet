@@ -7,9 +7,6 @@ const emailSend = require('../Utils/Emails/emailSend')
 const expiresAtTime = require('../Utils/Token/ExpiresAtTime')
 
 const valiSignup =async (username,email,password,dateOfBirth) => {
-     console.log('=== DEBUG SERVICE ===')
-    console.log('Params received:', {username, email, password, dateOfBirth})
-    console.log('====================')
     const emailVerif =await Users.findOne({email})
     const usernameVerif =await Users.findOne({username})
 
