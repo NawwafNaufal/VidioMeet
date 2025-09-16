@@ -5,38 +5,54 @@ const {nanoid} = require("nanoid")
 const ResponseError = require("../../Error/responseError")
 const Users = require("../../Models/SignUpDB")
 const cache = require("../../Utils/Cache/cache")
+const premium = require("../../Models/Subscription/premiumPlan")
+const promoPremium = require("../../Models/Subscription/promo")
 
-const createTransactionService = async (_id,premiumId,gross_amount,name) => {
-    const user = await Users.findById({_id})
+const createTransactionService = async (_id,premiumId,promoId) => {
 
-    if(!user) {
-        throw new ResponseError(400,"id is not exist")
-    }
+    let promo = null
+    let totalPrice = null
 
     const transactionNumber = `TRX-${nanoid(10)}`
-    
+
     let snap = new midtransClient.Snap({
         isProduction : false,
         serverKey : process.env.MIDTRANS_SERVER_KEY,
         clientKey: process.env.MIDTRANS_CLIENT_KEY,
     })
-        const data = new transaction({
-            userId : _id,
+
+    const user = await Users.findById({_id})
+    if(!user)throw new ResponseError(400,"id is not exist")
+
+    const getPremium = await premium.findById({_id : premiumId})
+    if(!user)throw new ResponseError(400,"Premium plan not found")
+
+    if (promoId) {
+        const resultPromo = await promoPremium.findById({_id : promoId})
+        if(!user)throw new ResponseError(400,"Promo not found")
+        promo = resultPromo.discount
+        const total = (promo / 100) * getPremium.price
+        totalPrice = getPremium.price - total
+    }
+
+    const verif = {
             premiumId,
             transactionNumber,
-            gross_amount,
+            price : getPremium.price,
+            discount : promo ,
+            gross_amount : totalPrice || getPremium.price,
             status : "pending",
-            paymentMethod : "null",
-        })
+            paymentMethod : "null"
+        }
     
-        await data.save()
-    
-        cache.set(_id,premiumId)
+    const createTransaction = await transaction.create(verif)
+
+    cache.set(_id,premiumId)
 
     let parameter = {
         "transaction_details": {
             "order_id": transactionNumber,
-            "gross_amount": gross_amount
+            "gross_amount": totalPrice || getPremium.price
         },
         "customer_details" : {
             "username" : user.username,
@@ -45,8 +61,8 @@ const createTransactionService = async (_id,premiumId,gross_amount,name) => {
         "item_details": [{
             "id": premiumId,
             "quantity": 1,
-            "price": gross_amount,
-            "name": name, 
+            "price": totalPrice || getPremium.price,
+            "name": getPremium.name, 
         }],
         "enabled_payments": [
             "credit_card","bca_klikbca", "bca_klikpay",
@@ -55,11 +71,9 @@ const createTransactionService = async (_id,premiumId,gross_amount,name) => {
             "shopeepay","other_qris","alfamart"],
     }
 
-    console.log(parameter)
-
     const midtransResponse = await snap.createTransaction(parameter)
     
-    return {data,midtransResponse}
+    return {createTransaction,midtransResponse}
 }
 
 module.exports = createTransactionService
