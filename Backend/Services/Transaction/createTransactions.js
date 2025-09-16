@@ -29,6 +29,9 @@ const createTransactionService = async (_id,premiumId,promoId) => {
 
     if (promoId) {
         const resultPromo = await promoPremium.findById({_id : promoId})
+        if(premiumId != resultPromo.premiumPlanId){
+            throw new ResponseError(400,"Promo only in type premium : " + resultPromo.premiumPlanId)
+        }
         if(!user)throw new ResponseError(400,"Promo not found")
         promo = resultPromo.discount
         const total = (promo / 100) * getPremium.price
