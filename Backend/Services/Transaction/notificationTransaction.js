@@ -4,6 +4,9 @@ const Users = require("../../Models/SignUpDB")
 require("dotenv").config()
 const cache = require("../../Utils/Cache/cache")
 
+
+//Need konsep transactional db
+
 const notificationMidtransServices = async (order_id,id) => {
     let coreApi = new midtransClient.CoreApi({
         isProduction : false,
@@ -22,40 +25,46 @@ const notificationMidtransServices = async (order_id,id) => {
         status = "failed"
     }
     
-    const startDate = {}
-    const endDate = {}
+    let startDate = null
+    let endDate = null
     const date = new Date()
     
     const getPremiumId = cache.get(id)
 
-    const alias = new Map([
-        ["Mounthin","68bce2d44db3ed0c31449d33"],
-        ["Threesongs","68bce2eb4db3ed0c31449d35"],
-        ["Sixbloods","68bce3334db3ed0c31449d37"],
-        ["Yearsir","68bce35d4db3ed0c31449d39"],
+    const duration = new Map([
+        ["68bce2d44db3ed0c31449d33", 30],   
+        ["68bce2eb4db3ed0c31449d35", 90],   
+        ["68bce3334db3ed0c31449d37", 180],  
+        ["68bce35d4db3ed0c31449d39", 365],  
     ])
 
-    if(getPremiumId === alias.get("Mounthin")){
-        startDate.startDate = date
-        endDate.endDate = new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000)
+    if(duration.has(getPremiumId)){
+        startDate = date
+        endDate = new Date(date.getTime() + duration.get(getPremiumId) * 24 * 60 * 60 * 1000)
     }
-    if(getPremiumId === "68bce2eb4db3ed0c31449d35"){
-        startDate.startDate = date
-        endDate.endDate = new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000)
-    }
-    if(getPremiumId === "68bce3334db3ed0c31449d37"){
-        startDate.startDate = date
-        endDate.endDate = new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000)
-    }
-    if(getPremiumId === "68bce35d4db3ed0c31449d39"){
-        startDate.startDate = date
-        endDate.endDate = new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000)
-    }
+    // if(getPremiumId === alias.get("Mounthin")){
+    //     startDate = date
+    //     endDate = new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000)
+    // }
+    // if(getPremiumId === alias.get("Threesongs")){
+    //     startDate = date
+    //     endDate = new Date(date.getTime() + 90 * 24 * 60 * 60 * 1000)
+    // }
+    // if(getPremiumId === alias.get("Sixbloods")){
+    //     startDate = date
+    //     endDate = new Date(date.getTime() + 180 * 24 * 60 * 60 * 1000)
+    // }
+    // if(getPremiumId === alias.get("Yearsir")){
+    //     startDate = date
+    //     endDate = new Date(date.getTime() + 365 * 24 * 60 * 60 * 1000)
+    // }
     
     const userSubsription = await Users.updateOne(
         {_id : id},
         {$set : {
-            premiumPlaId : getPremiumId,startDate,endDate
+            "subscription.premiumPlaId" : getPremiumId,
+            "subscription.startDate" : startDate,
+            "subscription.endDate" : endDate
             }
         }
     )

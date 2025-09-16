@@ -34,13 +34,16 @@ const UserSchema = new Mongoose.Schema({
     subscription : {
         premiumPlaId : {
             type : Mongoose.Schema.ObjectId,
-            ref : "premium"
+            ref : "premium",
+            default : null
         },
         startDate : {
             type : Date,
+            default : null
         },
         endDate : {
-            type : Date
+            type : Date,
+            default : null
         }
     }
 },{timestamps : true})
