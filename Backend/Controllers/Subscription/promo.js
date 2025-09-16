@@ -1,8 +1,7 @@
 const promoService = require("../../Services/Subscription/createPromo")
 
 const promoController = async (req,res,next) => {
-    const {name,discount,event,startDate,endDate} = req.body
-    const {premiumPlanId} = req.params
+    const {name,discount,event,startDate,endDate,premiumPlanId} = req.body
 
     try {
             const result = await promoService(name,discount,event,startDate,endDate,premiumPlanId)
