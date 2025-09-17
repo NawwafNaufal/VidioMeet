@@ -7,9 +7,12 @@ const Users = require("../../Models/SignUpDB")
 const cache = require("../../Utils/Cache/cache")
 const premium = require("../../Models/Subscription/premiumPlan")
 const promoPremium = require("../../Models/Subscription/promo")
+const { Types } = require('mongoose');
 
-const createTransactionService = async (_id,premiumId,promoId) => {
+const createTransactionService = async (_id,premiumId,promoId,redeemCode) => {
 
+    const filter = {}
+    
     let promo = null
     let totalPrice = null
 
@@ -27,12 +30,20 @@ const createTransactionService = async (_id,premiumId,promoId) => {
     const getPremium = await premium.findById({_id : premiumId})
     if(!user)throw new ResponseError(400,"Premium plan not found")
 
-    if (promoId) {
-        const resultPromo = await promoPremium.findById({_id : promoId})
-        if(premiumId != resultPromo.premiumPlanId){
-            throw new ResponseError(400,"Promo only in type premium : " + resultPromo.premiumPlanId)
+    if (promoId || redeemCode) {
+        if(promoId && Types.ObjectId.isValid(promoId)){
+            filter._id = new Types.ObjectId(promoId)
+        }else if(redeemCode) {
+            filter.redeemCode = redeemCode
         }
+        const resultPromo = await promoPremium.findOne(filter)
+        if(premiumId != resultPromo.premiumPlanId)
+            throw new ResponseError(400,"Promo only in type premium : " + resultPromo.premiumPlanId)
         if(!user)throw new ResponseError(400,"Promo not found")
+        const dateNow = new Date()
+        if(dateNow > resultPromo.endDate) {
+            throw new ResponseError(400,"Promo is expired")
+        }
         promo = resultPromo.discount
         const total = (promo / 100) * getPremium.price
         totalPrice = getPremium.price - total
