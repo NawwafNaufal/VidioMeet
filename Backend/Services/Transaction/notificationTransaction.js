@@ -3,9 +3,8 @@ const transaction = require("../../Models/transaction")
 const Users = require("../../Models/SignUpDB")
 require("dotenv").config()
 const cache = require("../../Utils/Cache/cache")
-
-
-//Need konsep transactional db
+const mongoose = require("mongoose")
+const ResponseError = require("../../Error/responseError")
 
 const notificationMidtransServices = async (order_id,id) => {
     let coreApi = new midtransClient.CoreApi({
@@ -42,40 +41,36 @@ const notificationMidtransServices = async (order_id,id) => {
         startDate = date
         endDate = new Date(date.getTime() + duration.get(getPremiumId) * 24 * 60 * 60 * 1000)
     }
-    // if(getPremiumId === alias.get("Mounthin")){
-    //     startDate = date
-    //     endDate = new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000)
-    // }
-    // if(getPremiumId === alias.get("Threesongs")){
-    //     startDate = date
-    //     endDate = new Date(date.getTime() + 90 * 24 * 60 * 60 * 1000)
-    // }
-    // if(getPremiumId === alias.get("Sixbloods")){
-    //     startDate = date
-    //     endDate = new Date(date.getTime() + 180 * 24 * 60 * 60 * 1000)
-    // }
-    // if(getPremiumId === alias.get("Yearsir")){
-    //     startDate = date
-    //     endDate = new Date(date.getTime() + 365 * 24 * 60 * 60 * 1000)
-    // }
+    const session = await mongoose.startSession()
+    session.startTransaction()
+
+    try {
+        const userSubsription = await Users.updateOne(
+            {_id : id},
+            {$set : {
+                "subscription.premiumPlaId" : getPremiumId,
+                "subscription.startDate" : startDate,
+                "subscription.endDate" : endDate
+                }
+            },
+            {session}
+        )
     
-    const userSubsription = await Users.updateOne(
-        {_id : id},
-        {$set : {
-            "subscription.premiumPlaId" : getPremiumId,
-            "subscription.startDate" : startDate,
-            "subscription.endDate" : endDate
-            }
-        }
-    )
+        const result = await transaction.findOneAndUpdate(
+            {transactionNumber: order_id },
+            {status,paymentMethod : paymentType,transactionId},
+            { new: true,session}
+        )
 
-    const result = await transaction.findOneAndUpdate(
-        {transactionNumber: order_id },
-        {status,paymentMethod : paymentType,transactionId},
-        { new: true }
-    )
-
-    return {result,transactionStatus,userSubsription}
+        await session.commitTransaction()
+        session.endSession()
+    
+        return {result,transactionStatus,userSubsription}
+    } catch (error) {
+        await session.abortTransaction()
+        session.endSession()
+        throw new ResponseError(400,"Transaction failed")
+    }
 }
 
 module.exports = notificationMidtransServices
