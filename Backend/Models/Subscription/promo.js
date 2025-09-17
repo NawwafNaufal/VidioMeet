@@ -13,9 +13,15 @@ const promo = new mongoose.Schema({
         type : String,
         required : true
     },
+    redeemCode : {
+        type : String,
+        unique : true,
+        sparse : true,
+        default : undefined
+    },
     startDate : {
         type : Date,
-        required : true
+        required : true,
     },
     endDate : {
         type : Date,
@@ -28,6 +34,10 @@ const promo = new mongoose.Schema({
     premiumPlanId : {
         type : mongoose.Schema.ObjectId,
         ref : "premium"
+    },
+    isHidden : {
+        type : Boolean,
+        default : false
     }
 },{timestamps : true})
 

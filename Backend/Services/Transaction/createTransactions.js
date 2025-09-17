@@ -8,7 +8,7 @@ const cache = require("../../Utils/Cache/cache")
 const premium = require("../../Models/Subscription/premiumPlan")
 const promoPremium = require("../../Models/Subscription/promo")
 
-const createTransactionService = async (_id,premiumId,promoId) => {
+const createTransactionService = async (_id,premiumId,promoId,redeemCode) => {
 
     let promo = null
     let totalPrice = null
@@ -21,17 +21,21 @@ const createTransactionService = async (_id,premiumId,promoId) => {
         clientKey: process.env.MIDTRANS_CLIENT_KEY,
     })
 
+    const statusIsHidden = null
+    if(!redeemCode) {
+        statusIsHidden = true
+    }
+
     const user = await Users.findById({_id})
     if(!user)throw new ResponseError(400,"id is not exist")
 
     const getPremium = await premium.findById({_id : premiumId})
     if(!user)throw new ResponseError(400,"Premium plan not found")
 
-    if (promoId) {
-        const resultPromo = await promoPremium.findById({_id : promoId})
-        if(premiumId != resultPromo.premiumPlanId){
+    if (promoId || redeemCode) {
+        const resultPromo = await promoPremium.findOne({$or : [{_id : promoId},{redeemCode}]})
+        if(premiumId != resultPromo.premiumPlanId)
             throw new ResponseError(400,"Promo only in type premium : " + resultPromo.premiumPlanId)
-        }
         if(!user)throw new ResponseError(400,"Promo not found")
         promo = resultPromo.discount
         const total = (promo / 100) * getPremium.price
@@ -45,7 +49,8 @@ const createTransactionService = async (_id,premiumId,promoId) => {
             discount : promo ,
             gross_amount : totalPrice || getPremium.price,
             status : "pending",
-            paymentMethod : "null"
+            paymentMethod : "null",
+            isHidden : statusIsHidden
         }
     
     const createTransaction = await transaction.create(verif)
