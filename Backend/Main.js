@@ -14,6 +14,8 @@ const newAccestoken = require('./Routes/newAccesToken')
 const logOut = require("./Routes/logout")
 const updateRole = require("./Routes/Admin/updateRole")
 
+const deleteSubscriptionService = require("./Services/Subscription/deleteSubscriptionExpired")
+
 const getUser = require("./Routes/Admin/getUsers")
 const notifications = require("./Routes/Notifications/createNotifications")
 const userNotifications = require("./Routes/Notifications/userNotifications")
@@ -36,6 +38,7 @@ app.use(express.json())
 mongooDb()
 app.use(cookie())
 
+deleteSubscriptionService()
 
 const PORT = process.env.PORT
 const swaggerDocument = YAML.load('./docs/apiDocs.yaml')
