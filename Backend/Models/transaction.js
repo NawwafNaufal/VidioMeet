@@ -11,10 +11,16 @@ const transactionDb = new Mongoose.Schema({
     },
     transactionId : {
         type : String,
-        required : true
     },
     paymentMethod : {
         type : String,
+    },
+    price : {
+        type : Number
+    },
+    discount : {
+        type : Number,
+        default : null
     },
     gross_amount : {
         type : String,

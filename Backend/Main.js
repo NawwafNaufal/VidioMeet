@@ -18,6 +18,8 @@ const newAccestoken = require('./Routes/newAccesToken')
 const logOut = require('./Routes/logout')
 const updateRole = require("./Routes/Admin/updateRole")
 
+const deleteSubscriptionService = require("./Services/Subscription/deleteSubscriptionExpired")
+
 const getUser = require("./Routes/Admin/getUsers")
 const notifications = require("./Routes/Notifications/createNotifications")
 const userNotifications = require("./Routes/Notifications/userNotifications")
@@ -45,6 +47,7 @@ const server = http.createServer(app)
 mongooDb()
 app.use(cookie())
 
+
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
@@ -68,6 +71,9 @@ cors: {
 });
 
 require("./Services/webRtc/signaling")(io);
+
+deleteSubscriptionService()
+
 
 const PORT = process.env.PORT
 const swaggerDocument = YAML.load('./docs/apiDocs.yaml')

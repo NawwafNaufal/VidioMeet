@@ -1,8 +1,10 @@
 const midtransClient = require('midtrans-client'); 
 const transaction = require("../../Models/transaction")
+const Users = require("../../Models/SignUpDB")
 require("dotenv").config()
+const cache = require("../../Utils/Cache/cache")
 
-const notificationMidtransServices = async (order_id) => {
+const notificationMidtransServices = async (order_id,id) => {
     let coreApi = new midtransClient.CoreApi({
         isProduction : false,
         serverKey : process.env.MIDTRANS_SERVER_KEY,
@@ -19,14 +21,45 @@ const notificationMidtransServices = async (order_id) => {
     }else if(transactionStatus.transaction_status === "cancel" || transactionStatus.transaction_status === "expire"){
         status = "failed"
     }
+    
+    let startDate = null
+    let endDate = null
+    const date = new Date()
+    
+    const getPremiumId = cache.get(id)
 
-    const result = await transaction.findOneAndUpdate(
-        {transactionNumber: order_id },
-        {status,paymentMethod : paymentType,transactionId},
-        { new: true }
-    )
+    const duration = new Map([
+        ["68bce2d44db3ed0c31449d33", 30],   
+        ["68bce2eb4db3ed0c31449d35", 90],   
+        ["68bce3334db3ed0c31449d37", 180],  
+        ["68bce35d4db3ed0c31449d39", 365],  
+    ])
 
-    return {result,transactionStatus}
+    if(duration.has(getPremiumId)){
+        startDate = date
+        endDate = new Date(date.getTime() + duration.get(getPremiumId) * 24 * 60 * 60 * 1000)
+    }
+
+        const userSubsrciption = await Users.updateOne(
+            {_id : id},
+            {$set : {
+                role : "host",
+                "subscription.premiumPlaId" : getPremiumId,
+                "subscription.startDate" : startDate,
+                "subscription.endDate" : endDate
+                }
+            },
+        )
+
+        console.log(userSubsrciption)
+    
+        const result = await transaction.findOneAndUpdate(
+            {transactionNumber: order_id },
+            {status,paymentMethod : paymentType,transactionId},
+            { new: true}
+        )
+
+        return {result,transactionStatus,userSubsrciption}
 }
 
 module.exports = notificationMidtransServices

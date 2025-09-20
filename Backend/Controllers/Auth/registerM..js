@@ -18,4 +18,4 @@ const signUpController = async (req,res,next) => {
     }
 }
 
-module.exports = {signUpController}
+module.exports = signUpController

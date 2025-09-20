@@ -1,4 +1,6 @@
-const routes  = require("../../Utils/Server/route")
+const express = require("express")
+const routes = express.Router()
+
 const readNotifController = require("../../Controllers/Notifications/readNotifications")
 const validateJwt = require("../../Middleware/Auth/jwtValidate")
 
