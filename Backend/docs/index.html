@@ -1,64 +1,61 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Meet Clone</title>
-  <style>
+    <title>VidioMeet</title>
+    <style>
     body { 
-      display: flex; 
-      flex-wrap: wrap; 
-      gap: 10px; 
-      background: #111; 
-      color: white;
-      font-family: Arial, sans-serif;
-      padding: 20px;
+        display: flex; 
+        flex-wrap: wrap; 
+        gap: 10px; 
+        background: #111; 
+        color: white;
+        font-family: Arial, sans-serif;
+        padding: 20px;
     }
     video { 
-      width: 300px; 
-      border-radius: 10px; 
-      background: #000; 
-      border: 2px solid #333;
+        width: 300px; 
+        border-radius: 10px; 
+        background: #000; 
+        border: 2px solid #333;
     }
     .controls {
-      width: 100%;
-      margin-bottom: 20px;
+        width: 100%;
+        margin-bottom: 20px;
     }
     input, button {
-      padding: 10px;
-      margin: 5px;
-      border-radius: 5px;
-      border: 1px solid #333;
+        padding: 10px;
+        margin: 5px;
+        border-radius: 5px;
+        border: 1px solid #333;
     }
     button {
-      background: #007bff;
-      color: white;
-      cursor: pointer;
+        background: #007bff;
+        color: white;
+        cursor: pointer;
     }
     button:hover {
-      background: #0056b3;
+        background: #0056b3;
     }
     #status {
-      margin: 10px 0;
-      padding: 10px;
-      background: #333;
-      border-radius: 5px;
+        margin: 10px 0;
+        padding: 10px;
+        background: #333;
+        border-radius: 5px;
     }
-  </style>
+    </style>
 </head>
 <body>
-  <div class="controls">
+    <div class="controls">
     <input type="text" id="roomInput" placeholder="Enter Room ID (or leave empty for random)" />
     <button onclick="joinRoom()">Join Room</button>
     <div id="status">Not connected</div>
-  </div>
-  
-  <div id="videos"></div>
+    </div>
 
-  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-  <script>
-    // Deteksi port dari URL saat ini atau default ke 3002
-    const currentPort = window.location.port || '3002';
-    const serverUrl = window.location.protocol + '//' + window.location.hostname + ':' + (currentPort === '5500' ? '3002' : currentPort);
-    
+    <div id="videos"></div>
+
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script>
+    const serverUrl = "http://localhost:3001";
     console.log('Connecting to:', serverUrl);
     const socket = io(serverUrl);
     const peers = {};
@@ -67,27 +64,24 @@
     let localStream = null;
     let currentRoomId = null;
 
-    // Update status
     function updateStatus(message) {
-      statusDiv.textContent = message;
-      console.log("Status:", message);
+        statusDiv.textContent = message;
+        console.log("Status:", message);
     }
 
-    // tampilkan video
     function addVideo(id, stream) {
-      let video = document.getElementById(id);
-      if (!video) {
+        let video = document.getElementById(id);
+        if (!video) {
         video = document.createElement("video");
         video.id = id;
         video.autoplay = true;
         video.playsinline = true;
         if (id === "me") {
-          video.muted = true;
-          video.style.border = "2px solid #28a745"; // Green border for local video
+            video.muted = true;
+            video.style.border = "2px solid #28a745"; 
         }
         videoGrid.appendChild(video);
         
-        // Add label
         const label = document.createElement("div");
         label.textContent = id === "me" ? "You" : `Peer ${id.substring(0, 8)}`;
         label.style.position = "absolute";
@@ -98,174 +92,155 @@
         video.style.position = "relative";
         video.parentElement.style.position = "relative";
         video.parentElement.appendChild(label);
-      }
-      video.srcObject = stream;
+        }
+        video.srcObject = stream;
     }
 
-    // Join room function
     async function joinRoom() {
-      try {
+        try {
         updateStatus("Getting camera and microphone...");
         
-        // Get user media first
         localStream = await navigator.mediaDevices.getUserMedia({ 
-          video: true, 
-          audio: true 
+            video: true, 
+            audio: true 
         });
         
         addVideo("me", localStream);
         
-        // Get room ID
         let roomId = document.getElementById("roomInput").value.trim();
         if (!roomId) {
-          // Create new room via API
-          const response = await fetch(`${serverUrl}/api/room`, {
+            const response = await fetch(`http://localhost:3001/api/room`, {
             method: "POST",
             headers: { "Content-Type": "application/json" }
-          });
-          const data = await response.json();
-          roomId = data.roomId;
-          document.getElementById("roomInput").value = roomId;
+            });
+            const data = await response.json();
+            roomId = data.roomId;
+            document.getElementById("roomInput").value = roomId;
         }
         
         currentRoomId = roomId;
         updateStatus(`Joining room: ${roomId}`);
         
-        // Join the room
         socket.emit("join", roomId);
         
-      } catch (error) {
-        console.error("Error joining room:", error);
-        updateStatus("Error: Could not access camera/microphone");
-      }
+        } catch (error) {
+            console.error("Error joining room:", error);
+            updateStatus("Error: Could not access camera/microphone");
+        }
     }
 
-    // Socket event handlers
     socket.on("connect", () => {
-      updateStatus("Connected to server. Enter room ID to join.");
+        updateStatus("Connected to server. Enter room ID to join.");
     });
 
     socket.on("disconnect", () => {
-      updateStatus("Disconnected from server");
+        updateStatus("Disconnected from server");
     });
 
-    // Handle existing peers (when joining a room with people already in it)
     socket.on("existing-peers", (peerIds) => {
-      console.log("Existing peers:", peerIds);
-      updateStatus(`Joined room ${currentRoomId}. Found ${peerIds.length} existing peer(s)`);
-      
-      // Create peer connections for existing users
-      peerIds.forEach(peerId => {
+        console.log("Existing peers:", peerIds);
+        updateStatus(`Joined room ${currentRoomId}. Found ${peerIds.length} existing peer(s)`);
+
+        peerIds.forEach(peerId => {
         if (localStream) {
-          const pc = createPeerConnection(peerId, localStream);
-          peers[peerId] = pc;
-          
-          // Create offer for existing peer
-          pc.createOffer().then(offer => {
-            pc.setLocalDescription(offer);
-            socket.emit("signal", { to: peerId, sdp: offer });
-          }).catch(console.error);
-        }
-      });
+            const pc = createPeerConnection(peerId, localStream);
+            peers[peerId] = pc;
+
+            pc.createOffer().then(offer => {
+                pc.setLocalDescription(offer);
+                socket.emit("signal", { to: peerId, sdp: offer });
+                }).catch(console.error);
+            }
+        });
     });
 
-    // Handle new peer joining
     socket.on("new-peer", (peerId) => {
-      console.log("New peer joined:", peerId);
-      updateStatus(`New peer joined: ${peerId.substring(0, 8)}`);
-      
-      if (localStream) {
+        console.log("New peer joined:", peerId);
+        updateStatus(`New peer joined: ${peerId.substring(0, 8)}`);
+
+        if (localStream) {
         const pc = createPeerConnection(peerId, localStream);
         peers[peerId] = pc;
-      }
+        }
     });
 
-    // Handle signaling
     socket.on("signal", async ({ from, sdp, candidate }) => {
-      try {
+        try {
         let pc = peers[from];
         
-        // Create peer connection if it doesn't exist
         if (!pc && localStream) {
-          pc = createPeerConnection(from, localStream);
-          peers[from] = pc;
+            pc = createPeerConnection(from, localStream);
+            peers[from] = pc;
         }
 
         if (sdp) {
-          await pc.setRemoteDescription(new RTCSessionDescription(sdp));
-          
-          if (sdp.type === "offer") {
+            await pc.setRemoteDescription(new RTCSessionDescription(sdp));
+
+            if (sdp.type === "offer") {
             const answer = await pc.createAnswer();
             await pc.setLocalDescription(answer);
             socket.emit("signal", { to: from, sdp: answer });
-          }
+            }
         } else if (candidate) {
-          await pc.addIceCandidate(new RTCIceCandidate(candidate));
+            await pc.addIceCandidate(new RTCIceCandidate(candidate));
         }
-      } catch (error) {
+    } catch (error) {
         console.error("Signaling error:", error);
-      }
+    }
     });
 
-    // Handle peer disconnect
     socket.on("peer-disconnected", (peerId) => {
-      console.log("Peer disconnected:", peerId);
-      updateStatus(`Peer left: ${peerId.substring(0, 8)}`);
-      
-      if (peers[peerId]) {
+        console.log("Peer disconnected:", peerId);
+    updateStatus(`Peer left: ${peerId.substring(0, 8)}`);
+
+    if (peers[peerId]) {
         peers[peerId].close();
         delete peers[peerId];
-      }
-      
-      const video = document.getElementById(peerId);
-      if (video) video.remove();
-    });
-
-    // Create peer connection
-    function createPeerConnection(peerId, stream) {
-      const pc = new RTCPeerConnection({
-        iceServers: [
-          { urls: 'stun:stun.l.google.com:19302' }
-        ]
-      });
-      
-      // Add local stream tracks
-      stream.getTracks().forEach(track => {
-        pc.addTrack(track, stream);
-      });
-
-      // Handle ICE candidates
-      pc.onicecandidate = (event) => {
-        if (event.candidate) {
-          socket.emit("signal", { 
-            to: peerId, 
-            candidate: event.candidate 
-          });
-        }
-      };
-
-      // Handle remote stream
-      pc.ontrack = (event) => {
-        console.log("Received remote stream from:", peerId);
-        addVideo(peerId, event.streams[0]);
-      };
-
-      // Handle connection state changes
-      pc.onconnectionstatechange = () => {
-        console.log(`Connection with ${peerId}:`, pc.connectionState);
-      };
-
-      return pc;
     }
 
-    // Auto-generate room ID on load
-    window.onload = () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const roomFromUrl = urlParams.get('room');
-      if (roomFromUrl) {
-        document.getElementById("roomInput").value = roomFromUrl;
-      }
+        const video = document.getElementById(peerId);
+        if (video) video.remove();
+    });
+
+    function createPeerConnection(peerId, stream) {
+        const pc = new RTCPeerConnection({
+        iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' }
+        ]
+    });
+
+    stream.getTracks().forEach(track => {
+        pc.addTrack(track, stream);
+    });
+
+    pc.onicecandidate = (event) => {
+        if (event.candidate) {
+            socket.emit("signal", { 
+            to: peerId, 
+            candidate: event.candidate 
+        });
+        }
     };
-  </script>
+
+    pc.ontrack = (event) => {
+        console.log("Received remote stream from:", peerId);
+        addVideo(peerId, event.streams[0]);
+    };
+
+    pc.onconnectionstatechange = () => {
+        console.log(`Connection with ${peerId}:`, pc.connectionState);
+    };
+
+        return pc;
+    }
+
+    window.onload = () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const roomFromUrl = urlParams.get('room');
+            if (roomFromUrl) {
+                document.getElementById("roomInput").value = roomFromUrl;
+        }
+    };
+    </script>
 </body>
 </html>

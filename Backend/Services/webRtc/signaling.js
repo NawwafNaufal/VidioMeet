@@ -1,66 +1,57 @@
-// Backend/Services/SignalingService.js - FIXED VERSION
+const logger = require("../../log/Winston")
+
 module.exports = (io) => {
-    const rooms = {}; // Track rooms and their participants
-  
-    io.on("connection", (socket) => {
-      console.log("✅ User connected:", socket.id);
-  
-      // join room
-      socket.on("join", (roomId) => {
-        socket.join(roomId);
-  
-        // Initialize room if doesn't exist
-        if (!rooms[roomId]) {
-          rooms[roomId] = new Set();
-        }
-  
-        // Get existing peers in the room
-        const existingPeers = Array.from(rooms[roomId]);
-        
-        // Send existing peers to the new user
-        socket.emit("existing-peers", existingPeers);
-  
-        // Notify existing users about new peer
-        socket.to(roomId).emit("new-peer", socket.id);
-  
-        // Add new peer to room
-        rooms[roomId].add(socket.id);
-  
-        console.log(`${socket.id} joined ${roomId}. Room has ${rooms[roomId].size} participants`);
-      });
-  
-      // forward SDP/ICE
-      socket.on("signal", (data) => {
+    const rooms = {}; 
+    const socketRooms = {}; 
+
+io.on("connection", (socket) => {
+    console.log("Video chat user connected:", socket.id);
+
+    socket.on("join", (roomId) => {
+    socket.join(roomId);
+
+    if (!socketRooms[roomId]) {
+        socketRooms[roomId] = new Set();
+    }
+
+    const existingPeers = Array.from(socketRooms[roomId]);
+    
+    socket.emit("existing-peers", existingPeers);
+
+    socket.to(roomId).emit("new-peer", socket.id);
+
+    socketRooms[roomId].add(socket.id);
+
+    logger.info(`${socket.id} joined ${roomId}. Room has ${socketRooms[roomId].size} participants`);
+});
+
+    socket.on("signal", (data) => {
         io.to(data.to).emit("signal", {
-          from: socket.id,
-          sdp: data.sdp,
-          candidate: data.candidate
-        });
-      });
-  
-      // handle disconnect
-      socket.on("disconnecting", () => {
-        const socketRooms = [...socket.rooms].filter(r => r !== socket.id);
-        
-        socketRooms.forEach(roomId => {
-          // Remove from room tracking
-          if (rooms[roomId]) {
-            rooms[roomId].delete(socket.id);
-            
-            // Clean up empty rooms
-            if (rooms[roomId].size === 0) {
-              delete rooms[roomId];
-            }
-          }
-          
-          // Notify others in the room
-          socket.to(roomId).emit("peer-disconnected", socket.id);
-          console.log(`${socket.id} left ${roomId}. Room has ${rooms[roomId]?.size || 0} participants`);
-        });
-      });
-  
-      socket.on("disconnect", () => {
-        console.log("❌ User disconnected:", socket.id);
-      });
+            from: socket.id,
+            sdp: data.sdp,
+            candidate: data.candidate
     });
-  };
+});
+
+    socket.on("disconnecting", () => {
+        const userRooms = [...socket.rooms].filter(r => r !== socket.id);
+    
+    userRooms.forEach(roomId => {
+    if (socketRooms[roomId]) {
+        socketRooms[roomId].delete(socket.id);
+        
+        if (socketRooms[roomId].size === 0) {
+            delete socketRooms[roomId];
+        }
+    }
+
+    socket.to(roomId).emit("peer-disconnected", socket.id);
+        logger.info(`${socket.id} left ${roomId}. Room has ${socketRooms[roomId]?.size || 0} participants`);
+    });
+});
+
+socket.on("disconnect", () => {
+    logger.info("Video chat user disconnected:", socket.id);
+    });
+});
+};
