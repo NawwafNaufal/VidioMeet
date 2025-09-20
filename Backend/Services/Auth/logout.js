@@ -8,7 +8,7 @@ const logOutService =async (req) => {
     if(!token) {
         throw new ResponseError(400,"Access token required")
     }
-
+    
     const {email} = token
 
     const getEmail = await Users.findOne({email})
