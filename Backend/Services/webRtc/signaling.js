@@ -1,57 +1,83 @@
-const logger = require("../../log/Winston")
+const logger = require("../../log/Winston");
+const Room = require("../../Models/room");
 
 module.exports = (io) => {
-    const rooms = {}; 
-    const socketRooms = {}; 
-
 io.on("connection", (socket) => {
-    console.log("Video chat user connected:", socket.id);
+    socket.userData = {
+        id: socket.id,
+        name: `Guest-${socket.id.substring(0, 5)}`,
+        email: `guest_${socket.id}@vidiomeet.dev`
+    };
 
-    socket.on("join", (roomId) => {
-    socket.join(roomId);
+    const user = socket.userData;
+    logger.info(`Video chat user connected: ${socket.id} (${user.email})`);
 
-    if (!socketRooms[roomId]) {
-        socketRooms[roomId] = new Set();
-    }
+    socket.on("join", async (roomId) => {
+        try {
+        socket.join(roomId);
 
-    const existingPeers = Array.from(socketRooms[roomId]);
-    
-    socket.emit("existing-peers", existingPeers);
+        await Room.findOneAndUpdate(
+        { roomId },
+        {
+            $push: {
+            participants: {
+                socketId: socket.id,
+                user: {
+                    id: user.id,
+                    name: user.name,
+                    email: user.email,
+                    },
+                },
+            },
+        },
+        { upsert: true, new: true }
+        );
 
-    socket.to(roomId).emit("new-peer", socket.id);
+        const roomData = await Room.findOne({ roomId });
+        const existingPeers = roomData.participants
+            .filter((p) => p.socketId !== socket.id)
+            .map((p) => p.socketId);
 
-    socketRooms[roomId].add(socket.id);
+        socket.emit("existing-peers", existingPeers);
+        socket.to(roomId).emit("new-peer", socket.id);
 
-    logger.info(`${socket.id} joined ${roomId}. Room has ${socketRooms[roomId].size} participants`);
-});
+        logger.info(
+            `${user.name} (${socket.id}) joined room ${roomId}. Total: ${roomData.participants.length}`
+        );
+        } catch (err) {
+        logger.error("Join room error:", err);
+        socket.emit("error", { message: "Could not join room" });
+        }
+    });
 
     socket.on("signal", (data) => {
-        io.to(data.to).emit("signal", {
-            from: socket.id,
-            sdp: data.sdp,
-            candidate: data.candidate
+    io.to(data.to).emit("signal", {
+        from: socket.id,
+        sdp: data.sdp,
+        candidate: data.candidate,
+        });
     });
-});
 
-    socket.on("disconnecting", () => {
-        const userRooms = [...socket.rooms].filter(r => r !== socket.id);
-    
-    userRooms.forEach(roomId => {
-    if (socketRooms[roomId]) {
-        socketRooms[roomId].delete(socket.id);
-        
-        if (socketRooms[roomId].size === 0) {
-            delete socketRooms[roomId];
+    socket.on("disconnecting", async () => {
+        const rooms = [...socket.rooms].filter((r) => r !== socket.id);
+
+    for (const roomId of rooms) {
+        await Room.findOneAndUpdate(
+        { roomId },
+        { $pull: { participants: { socketId: socket.id } } }
+        );
+
+        socket.to(roomId).emit("peer-disconnected", socket.id);
+
+        const roomData = await Room.findOne({ roomId });
+        logger.info(
+            `${user.name} left ${roomId}. Remaining: ${roomData?.participants.length || 0}`
+            );
         }
-    }
-
-    socket.to(roomId).emit("peer-disconnected", socket.id);
-        logger.info(`${socket.id} left ${roomId}. Room has ${socketRooms[roomId]?.size || 0} participants`);
     });
-});
 
-socket.on("disconnect", () => {
-    logger.info("Video chat user disconnected:", socket.id);
+    socket.on("disconnect", () => {
+        logger.info(`Video chat user disconnected: ${socket.id}`);
+        });
     });
-});
 };
